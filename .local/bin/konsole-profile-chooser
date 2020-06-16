@@ -1,0 +1,10 @@
+#!/bin/sh
+
+currenttime=$(date +%H:%M)
+if [[ "$currenttime" > "18:59" ]] || [[ "$currenttime" < "07:00" ]]; then
+    # Launch konsole in dark mode
+    konsole --profile Dark
+else
+    # Launch konsole in light mode
+    konsole --profile Light
+fi

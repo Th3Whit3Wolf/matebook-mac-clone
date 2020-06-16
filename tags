@@ -1,0 +1,300 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	0.0.0	/a3c87ab5/
+$DATA_PATH	.config/nvim/init.vim	/^let $DATA_PATH =$/;"	v
+$VIMPATH	.config/nvim/init.vim	/^let $VIMPATH = fnamemodify(resolve(expand('<sfile>:p')), ':h:h')$/;"	v
+0	.config/nvim/coc-settings.json	/^    "coc.preferences.formatOnSaveFiletypes": ["javascript", "typescript", "typescriptreact", "js/;"	s	array:coc.preferences.formatOnSaveFiletypes
+0	.config/nvim/coc-settings.json	/^    "eslint.filetypes": ["javascript", "typescript", "typescriptreact", "javascriptreact", "type/;"	s	array:eslint.filetypes
+1	.config/nvim/coc-settings.json	/^    "coc.preferences.formatOnSaveFiletypes": ["javascript", "typescript", "typescriptreact", "js/;"	s	array:coc.preferences.formatOnSaveFiletypes
+1	.config/nvim/coc-settings.json	/^    "eslint.filetypes": ["javascript", "typescript", "typescriptreact", "javascriptreact", "type/;"	s	array:eslint.filetypes
+2	.config/nvim/coc-settings.json	/^    "coc.preferences.formatOnSaveFiletypes": ["javascript", "typescript", "typescriptreact", "js/;"	s	array:coc.preferences.formatOnSaveFiletypes
+2	.config/nvim/coc-settings.json	/^    "eslint.filetypes": ["javascript", "typescript", "typescriptreact", "javascriptreact", "type/;"	s	array:eslint.filetypes
+3	.config/nvim/coc-settings.json	/^    "coc.preferences.formatOnSaveFiletypes": ["javascript", "typescript", "typescriptreact", "js/;"	s	array:coc.preferences.formatOnSaveFiletypes
+3	.config/nvim/coc-settings.json	/^    "eslint.filetypes": ["javascript", "typescript", "typescriptreact", "javascriptreact", "type/;"	s	array:eslint.filetypes
+4	.config/nvim/coc-settings.json	/^    "coc.preferences.formatOnSaveFiletypes": ["javascript", "typescript", "typescriptreact", "js/;"	s	array:coc.preferences.formatOnSaveFiletypes
+4	.config/nvim/coc-settings.json	/^    "eslint.filetypes": ["javascript", "typescript", "typescriptreact", "javascriptreact", "type/;"	s	array:eslint.filetypes
+5	.config/nvim/coc-settings.json	/^    "coc.preferences.formatOnSaveFiletypes": ["javascript", "typescript", "typescriptreact", "js/;"	s	array:coc.preferences.formatOnSaveFiletypes
+<	.config/nvim/init.vim	/^xnoremap < <gv$/;"	m
+<A-t>	.config/nvim/init.vim	/^inoremap <A-t> <Esc>:call TermToggle(10)<CR>$/;"	m
+<A-t>	.config/nvim/init.vim	/^nnoremap <A-t> :call TermToggle(10)<CR>$/;"	m
+<C-b>	.config/nvim/init.vim	/^noremap <expr> <C-b> max([winheight(0) - 2, 1])$/;"	m
+<C-e>	.config/nvim/init.vim	/^noremap <expr> <C-e> (line("w$") >= line('$') ? "j" : "3\\<C-e>")$/;"	m
+<C-f>	.config/nvim/init.vim	/^noremap <expr> <C-f> max([winheight(0) - 2, 1])$/;"	m
+<C-h>	.config/nvim/init.vim	/^nnoremap <C-h> <C-w>h$/;"	m
+<C-j>	.config/nvim/init.vim	/^inoremap <expr> <C-j> pumvisible() ? "\\<C-n>" : "\\<C-j>"$/;"	m
+<C-j>	.config/nvim/init.vim	/^nnoremap <C-j> <C-w>j$/;"	m
+<C-k>	.config/nvim/init.vim	/^inoremap <expr> <C-k> pumvisible() ? "\\<C-p>" : "\\<C-k>"$/;"	m
+<C-k>	.config/nvim/init.vim	/^nnoremap <C-k> <C-w>k$/;"	m
+<C-l>	.config/nvim/init.vim	/^nnoremap <C-l> <C-w>l$/;"	m
+<C-q>	.config/nvim/init.vim	/^nnoremap <C-q> <C-w>$/;"	m
+<C-s>	.config/nvim/init.vim	/^nmap <silent> <C-s> <Plug>(coc-range-select)$/;"	m
+<C-s>	.config/nvim/init.vim	/^xmap <silent> <C-s> <Plug>(coc-range-select)$/;"	m
+<C-w>z	.config/nvim/init.vim	/^nnoremap <silent><C-w>z :vert resize<CR>:resize<CR>:normal! ze<CR>$/;"	m
+<C-x>	.config/nvim/init.vim	/^nnoremap <C-x>  :bd<CR>   " delete buffer$/;"	m
+<C-y>	.config/nvim/init.vim	/^noremap <expr> <C-y> (line("w0") <= 1         ? "k" : "3\\<C-y>")$/;"	m
+<F6>	.config/nvim/after/plugin/shebung.vim	/^nnoremap  <buffer><F6> :call <SID>change_bang()<CR>$/;"	m
+<Plug>ChangeCommentary	.config/nvim/after/plugin/commentary.vim	/^nnoremap <silent> <Plug>ChangeCommentary c:<C-U>call <SID>textobject(1)<CR>$/;"	m
+<Plug>Commentary	.config/nvim/after/plugin/commentary.vim	/^nnoremap <expr>   <Plug>Commentary     <SID>go()$/;"	m
+<Plug>Commentary	.config/nvim/after/plugin/commentary.vim	/^onoremap <silent> <Plug>Commentary        :<C-U>call <SID>textobject(get(v:, 'operator', '') ==#/;"	m
+<Plug>Commentary	.config/nvim/after/plugin/commentary.vim	/^xnoremap <expr>   <Plug>Commentary     <SID>go()$/;"	m
+<Plug>CommentaryLine	.config/nvim/after/plugin/commentary.vim	/^nnoremap <expr>   <Plug>CommentaryLine <SID>go() . '_'$/;"	m
+<Plug>CommentaryUndo	.config/nvim/after/plugin/commentary.vim	/^nmap <silent> <Plug>CommentaryUndo :echoerr "Change your <Plug>CommentaryUndo map to <Plug>Comme/;"	m
+<S-Return>	.config/nvim/init.vim	/^inoremap <S-Return> <C-o>o$/;"	m
+<TAB>	.config/nvim/init.vim	/^inoremap <silent><expr> <TAB>$/;"	m
+<leader>D	.config/nvim/init.vim	/^nnoremap <leader>D :w<cr>:Dispatch cargo doc<cr>$/;"	m
+<leader>T	.config/nvim/init.vim	/^nnoremap <leader>T :call <SID>run_rust_tests()<cr>$/;"	m
+<leader>a	.config/nvim/init.vim	/^nmap <leader>a  <Plug>(coc-codeaction-selected)$/;"	m
+<leader>a	.config/nvim/init.vim	/^xmap <leader>a  <Plug>(coc-codeaction-selected)$/;"	m
+<leader>ac	.config/nvim/init.vim	/^nmap <leader>ac  <Plug>(coc-codeaction)$/;"	m
+<leader>f	.config/nvim/init.vim	/^nmap <leader>f  <Plug>(coc-format-selected)$/;"	m
+<leader>f	.config/nvim/init.vim	/^xmap <leader>f  <Plug>(coc-format-selected)$/;"	m
+<leader>qf	.config/nvim/init.vim	/^nmap <leader>qf  <Plug>(coc-fix-current)$/;"	m
+<leader>rn	.config/nvim/init.vim	/^nmap <leader>rn <Plug>(coc-rename)$/;"	m
+<space>a	.config/nvim/init.vim	/^nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>$/;"	m
+<space>c	.config/nvim/init.vim	/^nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>$/;"	m
+<space>e	.config/nvim/init.vim	/^nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>$/;"	m
+<space>j	.config/nvim/init.vim	/^nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>$/;"	m
+<space>k	.config/nvim/init.vim	/^nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>$/;"	m
+<space>o	.config/nvim/init.vim	/^nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>$/;"	m
+<space>p	.config/nvim/init.vim	/^nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>$/;"	m
+<space>s	.config/nvim/init.vim	/^nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>$/;"	m
+>	.config/nvim/init.vim	/^xnoremap > >gv|$/;"	m
+After	etc/systemd/system/darkMode.service	/^After=network.target$/;"	k	section:Unit
+CheckBackSpace	.config/nvim/functions.vim	/^function! CheckBackSpace() abort$/;"	f
+Commentary	.config/nvim/after/plugin/commentary.vim	/^command! -range -bar Commentary call s:go(<line1>,<line2>)$/;"	c
+DefaultDependencies	etc/systemd/system/darkMode.service	/^DefaultDependencies=no$/;"	k	section:Unit
+Description	etc/systemd/system/darkMode.service	/^Description=Dark\/Light mode switcher$/;"	k	section:Unit
+Description	etc/systemd/system/darkMode.timer	/^Description=Toggle dark\/light mode twice daily$/;"	k	section:Unit
+Environment	etc/systemd/system/darkMode.service	/^Environment="DBUS_SESSION_BUS_ADDRESS=unix:path=\/run\/user\/1000\/bus"$/;"	k	section:Service
+Environment	etc/systemd/system/darkMode.service	/^Environment="DISPLAY=:0"$/;"	k	section:Service
+Environment	etc/systemd/system/darkMode.service	/^Environment="PATH=\/usr\/local\/bin:\/usr\/bin:\/bin"$/;"	k	section:Service
+Environment	etc/systemd/system/darkMode.service	/^Environment="XDG_RUNTIME_DIR=\/run\/user\/1000"$/;"	k	section:Service
+ExecStart	etc/systemd/system/darkMode.service	/^ExecStart=\/home\/doc\/.local\/bin\/darkMode$/;"	k	section:Service
+Fold	.config/nvim/init.vim	/^command! -nargs=? Fold :call     CocAction('fold', <f-args>)$/;"	c
+FoldText	.config/nvim/functions.vim	/^function! FoldText()$/;"	f
+Format	.config/nvim/init.vim	/^command! -nargs=0 Format :call CocAction('format')$/;"	c
+Group	etc/systemd/system/darkMode.service	/^Group=users$/;"	k	section:Service
+Install	etc/systemd/system/darkMode.service	/^[Install]$/;"	s
+Install	etc/systemd/system/darkMode.timer	/^[Install]$/;"	s
+K	.config/nvim/init.vim	/^nnoremap <silent> K :call ShowDocumentation()<CR>$/;"	m
+MyAutoCmd	.config/nvim/init.vim	/^augroup MyAutoCmd$/;"	a
+MyGitStatus	.config/nvim/init.vim	/^function MyGitStatus() abort$/;"	f
+OR	.config/nvim/init.vim	/^command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')$/;"	c
+OnCalendar	etc/systemd/system/darkMode.timer	/^OnCalendar=*-*-* 07,19:00:00$/;"	k	section:Timer
+OpenChangedFiles	.config/nvim/functions.vim	/^function! OpenChangedFiles()$/;"	f
+Persistent	etc/systemd/system/darkMode.timer	/^Persistent=true$/;"	k	section:Timer
+RandomizedDelaySec	etc/systemd/system/darkMode.timer	/^RandomizedDelaySec=5$/;"	k	section:Timer
+Service	etc/systemd/system/darkMode.service	/^[Service]$/;"	s
+ShowDocumentation	.config/nvim/functions.vim	/^function! ShowDocumentation()$/;"	f
+TermToggle	.config/nvim/functions.vim	/^function! TermToggle(height)$/;"	f
+Timer	etc/systemd/system/darkMode.timer	/^[Timer]$/;"	s
+Type	etc/systemd/system/darkMode.service	/^Type=simple$/;"	k	section:Service
+UninstallUnusedCocExtensions	.config/nvim/functions.vim	/^function! UninstallUnusedCocExtensions() abort$/;"	f
+Unit	etc/systemd/system/darkMode.service	/^[Unit]$/;"	s
+Unit	etc/systemd/system/darkMode.timer	/^[Unit]$/;"	s
+User	etc/systemd/system/darkMode.service	/^User=user # replace with username$/;"	k	section:Service
+WantedBy	etc/systemd/system/darkMode.service	/^WantedBy=default.target$/;"	k	section:Install
+WantedBy	etc/systemd/system/darkMode.timer	/^WantedBy=timers.target$/;"	k	section:Install
+WipeHiddenBuffers	.config/nvim/functions.vim	/^function! WipeHiddenBuffers()$/;"	f
+X	.config/nvim/colors/one.vim	/^  function! <SID>X(group, fg, bg, attr, ...)$/;"	f
+XAPI	.config/nvim/colors/one.vim	/^  fun <SID>XAPI(group, fg, bg, attr)$/;"	f
+[g	.config/nvim/init.vim	/^nmap <silent> [g <Plug>(coc-diagnostic-prev)$/;"	m
+\x21	.config/nvim/init.vim	/^nnoremap ! :!$/;"	m
+]g	.config/nvim/init.vim	/^nmap <silent> ]g <Plug>(coc-diagnostic-next)$/;"	m
+ac	.config/nvim/init.vim	/^omap ac <Plug>(coc-classobj-a)$/;"	m
+ac	.config/nvim/init.vim	/^xmap ac <Plug>(coc-classobj-a)$/;"	m
+af	.config/nvim/init.vim	/^omap af <Plug>(coc-funcobj-a)$/;"	m
+af	.config/nvim/init.vim	/^xmap af <Plug>(coc-funcobj-a)$/;"	m
+cgc	.config/nvim/after/plugin/commentary.vim	/^        nmap cgc <Plug>ChangeCommentary$/;"	m
+coc.preferences.formatOnSaveFiletypes	.config/nvim/coc-settings.json	/^    "coc.preferences.formatOnSaveFiletypes": ["javascript", "typescript", "typescriptreact", "js/;"	a
+cocNvim	.config/nvim/init.vim	/^augroup cocNvim$/;"	a
+color	.config/nvim/colors/one.vim	/^  fun <SID>color(r, g, b)$/;"	f
+configureFoldsAndSpelling	.config/nvim/init.vim	/^augroup configureFoldsAndSpelling$/;"	a
+diagnostic.errorSign	.config/nvim/coc-settings.json	/^    "diagnostic.errorSign": "•",$/;"	s
+diagnostic.infoSign	.config/nvim/coc-settings.json	/^    "diagnostic.infoSign": "•"$/;"	s
+diagnostic.warningSign	.config/nvim/coc-settings.json	/^    "diagnostic.warningSign": "•",$/;"	s
+eslint.filetypes	.config/nvim/coc-settings.json	/^    "eslint.filetypes": ["javascript", "typescript", "typescriptreact", "javascriptreact", "type/;"	a
+g:coc_global_extensions	.config/nvim/init.vim	/^	let g:coc_global_extensions += ['coc-clangd']$/;"	v
+g:coc_global_extensions	.config/nvim/init.vim	/^	let g:coc_global_extensions += ['coc-docker']$/;"	v
+g:coc_global_extensions	.config/nvim/init.vim	/^	let g:coc_global_extensions += ['coc-elixir']$/;"	v
+g:coc_global_extensions	.config/nvim/init.vim	/^	let g:coc_global_extensions += ['coc-erlang_ls']$/;"	v
+g:coc_global_extensions	.config/nvim/init.vim	/^	let g:coc_global_extensions += ['coc-flutter']$/;"	v
+g:coc_global_extensions	.config/nvim/init.vim	/^	let g:coc_global_extensions += ['coc-phpls']$/;"	v
+g:coc_global_extensions	.config/nvim/init.vim	/^	let g:coc_global_extensions += ['coc-r-lsp']$/;"	v
+g:coc_global_extensions	.config/nvim/init.vim	/^	let g:coc_global_extensions += ['coc-solargraph']$/;"	v
+g:coc_global_extensions	.config/nvim/init.vim	/^	let g:coc_global_extensions += ['coc-texlab']$/;"	v
+g:coc_global_extensions	.config/nvim/init.vim	/^	let g:coc_global_extensions += ['coc-vetur']$/;"	v
+g:coc_global_extensions	.config/nvim/init.vim	/^let g:coc_global_extensions = [$/;"	v
+g:coc_snippet_next	.config/nvim/init.vim	/^let g:coc_snippet_next = '<tab>'$/;"	v
+g:colors_name	.config/nvim/colors/one.vim	/^let g:colors_name = 'one'$/;"	v
+g:colors_name	.config/nvim/colors/onedark.vim	/^let g:colors_name="onedark"$/;"	v
+g:loaded_2html_plugin	.config/nvim/init.vim	/^let g:loaded_2html_plugin = 1$/;"	v
+g:loaded_commentary	.config/nvim/after/plugin/commentary.vim	/^let g:loaded_commentary = 1$/;"	v
+g:loaded_getscript	.config/nvim/init.vim	/^let g:loaded_getscript = 1$/;"	v
+g:loaded_getscriptPlugin	.config/nvim/init.vim	/^let g:loaded_getscriptPlugin = 1$/;"	v
+g:loaded_gzip	.config/nvim/init.vim	/^let g:loaded_gzip = 1$/;"	v
+g:loaded_logiPat	.config/nvim/init.vim	/^let g:loaded_logiPat = 1$/;"	v
+g:loaded_matchit	.config/nvim/init.vim	/^let g:loaded_matchit = 1$/;"	v
+g:loaded_matchparen	.config/nvim/init.vim	/^let g:loaded_matchparen = 1$/;"	v
+g:loaded_rrhelper	.config/nvim/init.vim	/^let g:loaded_rrhelper = 1  " ?$/;"	v
+g:loaded_shada_plugin	.config/nvim/init.vim	/^let g:loaded_shada_plugin = 1  " ?$/;"	v
+g:loaded_tar	.config/nvim/init.vim	/^let g:loaded_tar = 1$/;"	v
+g:loaded_tarPlugin	.config/nvim/init.vim	/^let g:loaded_tarPlugin = 1$/;"	v
+g:loaded_tutor_mode_plugin	.config/nvim/init.vim	/^let g:loaded_tutor_mode_plugin = 1$/;"	v
+g:loaded_vimball	.config/nvim/init.vim	/^let g:loaded_vimball = 1$/;"	v
+g:loaded_vimballPlugin	.config/nvim/init.vim	/^let g:loaded_vimballPlugin = 1$/;"	v
+g:loaded_zip	.config/nvim/init.vim	/^let g:loaded_zip = 1$/;"	v
+g:loaded_zipPlugin	.config/nvim/init.vim	/^let g:loaded_zipPlugin = 1$/;"	v
+g:netrw_nogx	.config/nvim/init.vim	/^let g:netrw_nogx = 1 " disable netrw's gx mapping.$/;"	v
+g:node_host_prog	.config/nvim/init.vim	/^	let g:node_host_prog    = '~\/.node_modules\/bin\/neovim-node-host'$/;"	v
+g:one_allow_italics	.config/nvim/after/plugin/setcolors.vim	/^    let g:one_allow_italics = 0$/;"	v
+g:one_allow_italics	.config/nvim/after/plugin/setcolors.vim	/^    let g:one_allow_italics = 1$/;"	v
+g:onedark_hide_endofbuffer	.config/nvim/after/plugin/setcolors.vim	/^    let g:onedark_hide_endofbuffer = 0 $/;"	v
+g:onedark_hide_endofbuffer	.config/nvim/after/plugin/setcolors.vim	/^    let g:onedark_hide_endofbuffer = 1$/;"	v
+g:onedark_termcolors	.config/nvim/after/plugin/setcolors.vim	/^    let g:onedark_termcolors = 256$/;"	v
+g:onedark_termcolors	.config/nvim/colors/onedark.vim	/^let g:onedark_termcolors = 256$/;"	v
+g:onedark_terminal_italics	.config/nvim/after/plugin/setcolors.vim	/^    let g:onedark_terminal_italics = 0$/;"	v
+g:onedark_terminal_italics	.config/nvim/after/plugin/setcolors.vim	/^    let g:onedark_terminal_italics = 1$/;"	v
+g:onedark_terminal_italics	.config/nvim/colors/onedark.vim	/^let g:onedark_terminal_italics = 1$/;"	v
+g:python3_host_prog	.config/nvim/init.vim	/^	let g:python3_host_prog = $DATA_PATH . '\/venv\/neovim3\/bin\/python'$/;"	v
+g:rainbow#max_level	.config/nvim/init.vim	/^let g:rainbow#max_level = 16$/;"	v
+g:rainbow#pairs	.config/nvim/init.vim	/^let g:rainbow#pairs = [['(', ')'], ['[', ']']]$/;"	v
+g:term_buf	.config/nvim/functions.vim	/^            let g:term_buf = bufnr("")$/;"	v
+g:term_buf	.config/nvim/functions.vim	/^let g:term_buf = 0$/;"	v
+g:term_win	.config/nvim/functions.vim	/^        let g:term_win = win_getid()$/;"	v
+g:term_win	.config/nvim/functions.vim	/^let g:term_win = 0$/;"	v
+g:terminal_ansi_colors	.config/nvim/colors/onedark.vim	/^let g:terminal_ansi_colors = [$/;"	v
+g:terminal_color_0	.config/nvim/colors/one.vim	/^  let g:terminal_color_0  = "#353a44"$/;"	v
+g:terminal_color_0	.config/nvim/colors/onedark.vim	/^  let g:terminal_color_0 =  s:black.gui$/;"	v
+g:terminal_color_1	.config/nvim/colors/one.vim	/^  let g:terminal_color_1  = "#e88388"$/;"	v
+g:terminal_color_1	.config/nvim/colors/onedark.vim	/^  let g:terminal_color_1 =  s:red.gui$/;"	v
+g:terminal_color_10	.config/nvim/colors/one.vim	/^  let g:terminal_color_10 = "#a7cc8c"$/;"	v
+g:terminal_color_10	.config/nvim/colors/onedark.vim	/^  let g:terminal_color_10 = s:green.gui " No dark version$/;"	v
+g:terminal_color_11	.config/nvim/colors/one.vim	/^  let g:terminal_color_11 = "#ebca8d"$/;"	v
+g:terminal_color_11	.config/nvim/colors/onedark.vim	/^  let g:terminal_color_11 = s:dark_yellow.gui$/;"	v
+g:terminal_color_12	.config/nvim/colors/one.vim	/^  let g:terminal_color_12 = "#72bef2"$/;"	v
+g:terminal_color_12	.config/nvim/colors/onedark.vim	/^  let g:terminal_color_12 = s:blue.gui " No dark version$/;"	v
+g:terminal_color_13	.config/nvim/colors/one.vim	/^  let g:terminal_color_13 = "#d291e4"$/;"	v
+g:terminal_color_13	.config/nvim/colors/onedark.vim	/^  let g:terminal_color_13 = s:purple.gui " No dark version$/;"	v
+g:terminal_color_14	.config/nvim/colors/one.vim	/^  let g:terminal_color_14 = "#65c2cd"$/;"	v
+g:terminal_color_14	.config/nvim/colors/onedark.vim	/^  let g:terminal_color_14 = s:cyan.gui " No dark version$/;"	v
+g:terminal_color_15	.config/nvim/colors/one.vim	/^  let g:terminal_color_15 = "#e3e5e9"$/;"	v
+g:terminal_color_15	.config/nvim/colors/onedark.vim	/^  let g:terminal_color_15 = s:comment_grey.gui$/;"	v
+g:terminal_color_2	.config/nvim/colors/one.vim	/^  let g:terminal_color_2  = "#a7cc8c"$/;"	v
+g:terminal_color_2	.config/nvim/colors/onedark.vim	/^  let g:terminal_color_2 =  s:green.gui$/;"	v
+g:terminal_color_3	.config/nvim/colors/one.vim	/^  let g:terminal_color_3  = "#ebca8d"$/;"	v
+g:terminal_color_3	.config/nvim/colors/onedark.vim	/^  let g:terminal_color_3 =  s:yellow.gui$/;"	v
+g:terminal_color_4	.config/nvim/colors/one.vim	/^  let g:terminal_color_4  = "#72bef2"$/;"	v
+g:terminal_color_4	.config/nvim/colors/onedark.vim	/^  let g:terminal_color_4 =  s:blue.gui$/;"	v
+g:terminal_color_5	.config/nvim/colors/one.vim	/^  let g:terminal_color_5  = "#d291e4"$/;"	v
+g:terminal_color_5	.config/nvim/colors/onedark.vim	/^  let g:terminal_color_5 =  s:purple.gui$/;"	v
+g:terminal_color_6	.config/nvim/colors/one.vim	/^  let g:terminal_color_6  = "#65c2cd"$/;"	v
+g:terminal_color_6	.config/nvim/colors/onedark.vim	/^  let g:terminal_color_6 =  s:cyan.gui$/;"	v
+g:terminal_color_7	.config/nvim/colors/one.vim	/^  let g:terminal_color_7  = "#e3e5e9"$/;"	v
+g:terminal_color_7	.config/nvim/colors/onedark.vim	/^  let g:terminal_color_7 =  s:white.gui$/;"	v
+g:terminal_color_8	.config/nvim/colors/one.vim	/^  let g:terminal_color_8  = "#353a44"$/;"	v
+g:terminal_color_8	.config/nvim/colors/onedark.vim	/^  let g:terminal_color_8 =  s:visual_grey.gui$/;"	v
+g:terminal_color_9	.config/nvim/colors/one.vim	/^  let g:terminal_color_9  = "#e88388"$/;"	v
+g:terminal_color_9	.config/nvim/colors/onedark.vim	/^  let g:terminal_color_9 =  s:dark_red.gui$/;"	v
+g:terminal_color_background	.config/nvim/colors/onedark.vim	/^  let g:terminal_color_background = g:terminal_color_0$/;"	v
+g:terminal_color_foreground	.config/nvim/colors/onedark.vim	/^  let g:terminal_color_foreground = g:terminal_color_7$/;"	v
+g:vista#renderer#enable_icon	.config/nvim/init.vim	/^let g:vista#renderer#enable_icon = 1$/;"	v
+g:vista#renderer#icons	.config/nvim/init.vim	/^let g:vista#renderer#icons = {$/;"	v
+g:vista_default_executive	.config/nvim/init.vim	/^let g:vista_default_executive = 'ctags'$/;"	v
+g:vista_fzf_preview	.config/nvim/init.vim	/^let g:vista_fzf_preview = ['right:50%']$/;"	v
+g:vista_icon_indent	.config/nvim/init.vim	/^let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]$/;"	v
+gc	.config/nvim/after/plugin/commentary.vim	/^    nmap gc  <Plug>Commentary$/;"	m
+gc	.config/nvim/after/plugin/commentary.vim	/^    omap gc  <Plug>Commentary$/;"	m
+gc	.config/nvim/after/plugin/commentary.vim	/^    xmap gc  <Plug>Commentary$/;"	m
+gcc	.config/nvim/after/plugin/commentary.vim	/^    nmap gcc <Plug>CommentaryLine$/;"	m
+gcu	.config/nvim/after/plugin/commentary.vim	/^    nmap gcu <Plug>Commentary<Plug>Commentary$/;"	m
+gd	.config/nvim/init.vim	/^nmap <silent> gd <Plug>(coc-definition)$/;"	m
+gi	.config/nvim/init.vim	/^nmap <silent> gi <Plug>(coc-implementation)$/;"	m
+gr	.config/nvim/init.vim	/^nmap <silent> gr <Plug>(coc-references)$/;"	m
+grey_color	.config/nvim/colors/one.vim	/^  fun <SID>grey_color(n)$/;"	f
+grey_level	.config/nvim/colors/one.vim	/^  fun <SID>grey_level(n)$/;"	f
+grey_number	.config/nvim/colors/one.vim	/^  fun <SID>grey_number(x)$/;"	f
+gy	.config/nvim/init.vim	/^nmap <silent> gy <Plug>(coc-type-definition)$/;"	m
+hr	.config/nvim/after/plugin/setcolors.vim	/^let hr = str2nr(strftime('%H'))$/;"	v
+ic	.config/nvim/init.vim	/^omap ic <Plug>(coc-classobj-i)$/;"	m
+ic	.config/nvim/init.vim	/^xmap ic <Plug>(coc-classobj-i)$/;"	m
+if	.config/nvim/init.vim	/^omap if <Plug>(coc-funcobj-i)$/;"	m
+if	.config/nvim/init.vim	/^xmap if <Plug>(coc-funcobj-i)$/;"	m
+j	.config/nvim/init.vim	/^nnoremap j gj$/;"	m
+j	.config/nvim/init.vim	/^vnoremap j gj$/;"	m
+k	.config/nvim/init.vim	/^nnoremap k gk$/;"	m
+k	.config/nvim/init.vim	/^vnoremap k gk$/;"	m
+mapleader	.config/nvim/init.vim	/^let mapleader = "\\<Space>"$/;"	v
+matebook-mac-clone-	README.md	/^# matebook-mac-clone-$/;"	c
+miscGroup	.config/nvim/init.vim	/^augroup miscGroup$/;"	a
+one#highlight	.config/nvim/colors/one.vim	/^function! one#highlight(group, fg, bg, attr)$/;"	f
+rainbow_lisp	.config/nvim/init.vim	/^augroup rainbow_lisp$/;"	a
+resumeCursorPosition	.config/nvim/init.vim	/^augroup resumeCursorPosition$/;"	a
+rgb	.config/nvim/colors/one.vim	/^  fun <SID>rgb(rgb)$/;"	f
+rgb_color	.config/nvim/colors/one.vim	/^  fun <SID>rgb_color(x, y, z)$/;"	f
+rgb_level	.config/nvim/colors/one.vim	/^  fun <SID>rgb_level(n)$/;"	f
+rgb_number	.config/nvim/colors/one.vim	/^  fun <SID>rgb_number(x)$/;"	f
+s:BufferEmpty	.config/nvim/functions.vim	/^function! s:BufferEmpty()$/;"	f
+s:SweepBuffers	.config/nvim/functions.vim	/^function! s:SweepBuffers()$/;"	f
+s:black	.config/nvim/colors/onedark.vim	/^let s:black = s:colors.black$/;"	v
+s:blue	.config/nvim/colors/onedark.vim	/^let s:blue = s:colors.blue$/;"	v
+s:change_bang	.config/nvim/after/plugin/shebung.vim	/^function! s:change_bang()$/;"	f
+s:colors	.config/nvim/colors/onedark.vim	/^let s:colors = {$/;"	v
+s:comment_grey	.config/nvim/colors/onedark.vim	/^let s:comment_grey = s:colors.comment_grey$/;"	v
+s:cursor_grey	.config/nvim/colors/onedark.vim	/^let s:cursor_grey = s:colors.cursor_grey$/;"	v
+s:cyan	.config/nvim/colors/onedark.vim	/^let s:cyan = s:colors.cyan$/;"	v
+s:dark_red	.config/nvim/colors/onedark.vim	/^let s:dark_red = s:colors.dark_red$/;"	v
+s:dark_yellow	.config/nvim/colors/onedark.vim	/^let s:dark_yellow = s:colors.dark_yellow$/;"	v
+s:go	.config/nvim/after/plugin/commentary.vim	/^function! s:go(...) abort$/;"	f
+s:green	.config/nvim/colors/onedark.vim	/^let s:green = s:colors.green$/;"	v
+s:group_colors	.config/nvim/colors/onedark.vim	/^let s:group_colors = {} " Cache of default highlight group settings, for later reference via `on/;"	v
+s:gutter_fg_grey	.config/nvim/colors/onedark.vim	/^let s:gutter_fg_grey = s:colors.gutter_fg_grey$/;"	v
+s:h	.config/nvim/colors/onedark.vim	/^function! s:h(group, style, ...)$/;"	f
+s:hue_1	.config/nvim/colors/one.vim	/^  let s:hue_1  = ['#0184bc', '31'] " cyan$/;"	v
+s:hue_2	.config/nvim/colors/one.vim	/^  let s:hue_2  = ['#4078f2', '33'] " blue$/;"	v
+s:hue_3	.config/nvim/colors/one.vim	/^  let s:hue_3  = ['#a626a4', '127'] " purple$/;"	v
+s:hue_4	.config/nvim/colors/one.vim	/^  let s:hue_4  = ['#50a14f', '71'] " green$/;"	v
+s:hue_5	.config/nvim/colors/one.vim	/^  let s:hue_5   = ['#e45649', '166'] " red 1$/;"	v
+s:hue_5_2	.config/nvim/colors/one.vim	/^  let s:hue_5_2 = ['#ca1243', '160'] " red 2$/;"	v
+s:hue_6	.config/nvim/colors/one.vim	/^  let s:hue_6   = ['#986801', '94'] " orange 1$/;"	v
+s:hue_6_2	.config/nvim/colors/one.vim	/^  let s:hue_6_2 = ['#c18401', '136'] " orange 2$/;"	v
+s:italic	.config/nvim/colors/one.vim	/^let s:italic = 'italic'$/;"	v
+s:menu_grey	.config/nvim/colors/onedark.vim	/^let s:menu_grey = s:colors.menu_grey$/;"	v
+s:mono_1	.config/nvim/colors/one.vim	/^  let s:mono_1 = ['#494b53', '23']$/;"	v
+s:mono_2	.config/nvim/colors/one.vim	/^  let s:mono_2 = ['#696c77', '60']$/;"	v
+s:mono_3	.config/nvim/colors/one.vim	/^  let s:mono_3 = ['#a0a1a7', '145']$/;"	v
+s:mono_4	.config/nvim/colors/one.vim	/^  let s:mono_4 = ['#c2c2c3', '250']$/;"	v
+s:pmenu	.config/nvim/colors/one.vim	/^  let s:pmenu        = ['#dfdfdf', '253']$/;"	v
+s:purple	.config/nvim/colors/onedark.vim	/^let s:purple = s:colors.purple$/;"	v
+s:python_shebang	.config/nvim/after/plugin/shebung.vim	/^function! s:python_shebang()$/;"	f
+s:red	.config/nvim/colors/onedark.vim	/^let s:red = s:colors.red$/;"	v
+s:run_rust_tests	.config/nvim/init.vim	/^function! s:run_rust_tests()$/;"	f
+s:shell_shebang	.config/nvim/after/plugin/shebung.vim	/^function! s:shell_shebang()$/;"	f
+s:source_file	.config/nvim/init.vim	/^function! s:source_file(path, ...) abort$/;"	f
+s:special_grey	.config/nvim/colors/one.vim	/^  let s:special_grey = ['#d3d3d3', '251']$/;"	v
+s:special_grey	.config/nvim/colors/onedark.vim	/^let s:special_grey = s:colors.special_grey$/;"	v
+s:strip_white_space	.config/nvim/after/plugin/commentary.vim	/^function! s:strip_white_space(l,r,line) abort$/;"	f
+s:surroundings	.config/nvim/after/plugin/commentary.vim	/^function! s:surroundings() abort$/;"	f
+s:syntax_accent	.config/nvim/colors/one.vim	/^  let s:syntax_accent = ['#526fff', '63']$/;"	v
+s:syntax_accent_2	.config/nvim/colors/one.vim	/^  let s:syntax_accent_2 = ['#0083be', '31']$/;"	v
+s:syntax_bg	.config/nvim/colors/one.vim	/^  let s:syntax_bg     = ['#fafafa', '255']$/;"	v
+s:syntax_cursor	.config/nvim/colors/one.vim	/^  let s:syntax_cursor = ['#f0f0f0', '254']$/;"	v
+s:syntax_fg	.config/nvim/colors/one.vim	/^  let s:syntax_fg = s:mono_1$/;"	v
+s:syntax_fold_bg	.config/nvim/colors/one.vim	/^  let s:syntax_fold_bg = s:mono_3$/;"	v
+s:syntax_gutter	.config/nvim/colors/one.vim	/^  let s:syntax_gutter = ['#9e9e9e', '247']$/;"	v
+s:textobject	.config/nvim/after/plugin/commentary.vim	/^function! s:textobject(inner) abort$/;"	f
+s:vertsplit	.config/nvim/colors/one.vim	/^  let s:vertsplit    = ['#e7e9e1', '188']$/;"	v
+s:vertsplit	.config/nvim/colors/onedark.vim	/^let s:vertsplit = s:colors.vertsplit$/;"	v
+s:visual_black	.config/nvim/colors/onedark.vim	/^let s:visual_black = s:colors.visual_black " Black out selected text in 16-color visual mode$/;"	v
+s:visual_grey	.config/nvim/colors/one.vim	/^  let s:visual_grey  = ['#d0d0d0', '251']$/;"	v
+s:visual_grey	.config/nvim/colors/onedark.vim	/^let s:visual_grey = s:colors.visual_grey$/;"	v
+s:white	.config/nvim/colors/onedark.vim	/^let s:white = s:colors.white$/;"	v
+s:yellow	.config/nvim/colors/onedark.vim	/^let s:yellow = s:colors.yellow$/;"	v
+suggest.echodocSupport	.config/nvim/coc-settings.json	/^    "suggest.echodocSupport": true,$/;"	b
+suggest.maxCompleteItemCount	.config/nvim/coc-settings.json	/^    "suggest.maxCompleteItemCount": 20,$/;"	n
+zz	.config/nvim/init.vim	/^nnoremap <expr> zz (winline() == (winheight(0)+1) \/ 2) ?$/;"	m

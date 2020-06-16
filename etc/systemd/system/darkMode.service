@@ -1,0 +1,18 @@
+[Unit]
+Description=Dark/Light mode switcher
+DefaultDependencies=no
+After=network.target
+
+[Service]
+Type=simple
+User=user # replace with username
+Group=users
+Environment="PATH=/usr/local/bin:/usr/bin:/bin"
+Environment="DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus"
+Environment="DISPLAY=:0"
+Environment="XDG_RUNTIME_DIR=/run/user/1000"
+ExecStart=/home/doc/.local/bin/darkMode
+# TimeoutStartSec=0
+
+[Install]
+WantedBy=default.target

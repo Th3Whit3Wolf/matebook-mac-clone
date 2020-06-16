@@ -1,0 +1,47 @@
+#!/bin/sh
+
+# Get current time
+currenttime=$(date +%H:%M)
+
+# Check if time is between 7:00 PM and 7:00 AM
+if [[ "$currenttime" > "18:59" ]] || [[ "$currenttime" < "07:00" ]]; then
+
+        #          ____             __  
+        #         / __ \____ ______/ /__
+        #        / / / / __ `/ ___/ //_/
+        #       / /_/ / /_/ / /  / ,<   
+        #      /_____/\__,_/_/  /_/|_|  
+
+    # Change Kvantum Theme
+    kvantummanager --set McMojave
+    #$plasma_theme -c /usr/share/color-schemes/McMojave.colors
+    # Change Desktop Wallpaper
+    qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'var allDesktops = desktops();print (allDesktops);for (i=0;i<allDesktops.length;i++) {d = allDesktops[i];d.wallpaperPlugin = "org.kde.image";d.currentConfigGroup = Array("Wallpaper", "org.kde.image", "General");d.writeConfig("Image", "file:///home/doc/Pics/10-15-Night.jpg")}'
+    # Change KDE Lock Screen Wallpaper
+    kwriteconfig5 --file ~/.config/kscreenlockerrc --group Greeter --group Wallpaper --group org.kde.image --group General --key Image "file:///home/doc/Pics/10-15-Night.jpg"
+    # Change KDE Theme
+    lookandfeeltool -a 'com.github.vinceliuice.McMojave'
+    # Change Gnome Theme
+    sed -i 's/gtk-theme-name=Mojave-light/gtk-theme-name=Mojave-dark/' ~/.config/gtk-3.0/settings.ini
+    echo "Dark Mode On"
+else
+
+        #          __    _       __    __ 
+        #         / /   (_)___ _/ /_  / /_
+        #        / /   / / __ `/ __ \/ __/
+        #       / /___/ / /_/ / / / / /_  
+        #      /_____/_/\__, /_/ /_/\__/  
+        #              /____/             
+
+    # Change Kvantum Theme
+    kvantummanager --set McMojave-light
+    # Change Desktop Wallpaper
+    qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'var allDesktops = desktops();print (allDesktops);for (i=0;i<allDesktops.length;i++) {d = allDesktops[i];d.wallpaperPlugin = "org.kde.image";d.currentConfigGroup = Array("Wallpaper", "org.kde.image", "General");d.writeConfig("Image", "file:///home/doc/Pics/10-15-Day.jpg")}'
+    # Change KDE Lock Screen Wallpaper
+    kwriteconfig5 --file ~/.config/kscreenlockerrc --group Greeter --group Wallpaper --group org.kde.image --group General --key Image "file:///home/doc/Pics/10-15-Day.jpg"
+    # Change KDE Theme
+    lookandfeeltool -a 'com.github.vinceliuice.McMojave-light'
+    # Change Gnome Theme
+    sed -i 's/gtk-theme-name=Mojave-dark/gtk-theme-name=Mojave-light/' ~/.config/gtk-3.0/settings.ini
+    echo "Light Mode On"
+fi

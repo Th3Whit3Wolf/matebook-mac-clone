@@ -1,0 +1,150 @@
+v := "v0.2.5"
+os := "x86_64-unknown-linux-gnu"
+# Install Super Sayain Vim
+install: initialize venv _init_pack
+	echo "Super Saiyan Vim Installed Sucessfully"
+
+initialize: 
+	mkdir -vp {{env_var_or_default('XDG_CACHE_HOME', '$HOME/.cache')}}/vim/backup
+	mkdir -vp {{env_var_or_default('XDG_CACHE_HOME', '$HOME/.cache')}}/vim/session
+	mkdir -vp {{env_var_or_default('XDG_CACHE_HOME', '$HOME/.cache')}}/vim/swap
+	mkdir -vp {{env_var_or_default('XDG_CACHE_HOME', '$HOME/.cache')}}/vim/tags
+	mkdir -vp {{env_var_or_default('XDG_CACHE_HOME', '$HOME/.cache')}}/vim/undo
+	mkdir -vp {{env_var_or_default('XDG_CACHE_HOME', '$HOME/.cache')}}/vim/venv
+
+_init_pack:
+	#!/usr/bin/bash	
+	wget https://github.com/maralla/pack/releases/download/{{v}}/pack-{{v}}-{{os}}.tar.gz
+	tar -vxf pack-{{v}}-{{os}}.tar.gz
+	echo "export VIM_CONFIG_PATH=$HOME/.cache/vim" >> ~/.zprofile
+	echo "export VIM_CONFIG_PATH=$HOME/.cache/vim" >> ~/.profile
+
+# Update Super Sayain Vim
+update:
+    @git pull --ff --ff-only;
+
+# Same as Update
+@upgrade: update
+
+# Unistall Super Sayain Vim
+uninstall:
+	rm -rf {{env_var_or_default('XDG_CACHE_HOME', '$HOME/.cache')}}/vim
+
+_venv2:
+	#!/usr/bin/env bash
+	venv="${XDG_CACHE_HOME:-$HOME/.cache}/vim/venv"
+	# Try to detect python2/3 executables
+	if ! hash python2 2>/dev/null; then
+		echo "Python2 installation not found."
+		exit 1
+	fi
+	# Create Python Virtual Environment
+	# Ensure python 2 virtual environments
+	[ -d "$venv" ] || mkdir -p "$venv"
+	if hash pyenv 2>/dev/null && [ -d "$(pyenv root)/versions/neovim2" ]; then
+		# pyenv environments are setup so use them
+		[ -d "$venv/neovim2" ] || ln -s "$(pyenv root)/versions/neovim2" "$venv/neovim2"
+	else
+		[ -d "$venv/neovim2" ] || python2 -m virtualenv "$venv/neovim2"
+	fi
+	if ! hash python2 2>/dev/null; then
+		echo "for Python 2 support install python 2 and python 2 pip and run just venv"
+	else
+		echo ":: PYTHON 2"
+		"$venv/neovim2/bin/pip" install -U \
+			pynvim \
+			yapf \
+			autopep8 \
+			pylint \
+			flake8 \
+			pylama
+	fi
+
+# Setup virtual environments for python
+venv:
+	#!/usr/bin/env bash
+	venv="${XDG_CACHE_HOME:-$HOME/.cache}/vim/venv"
+	if ! hash python3 2>/dev/null; then
+		echo "Python3 installation not found."
+		exit 1
+	fi
+	# Create Python Virtual Environment
+	# Ensure python 3 virtual environments
+	[ -d "$venv" ] || mkdir -p "$venv"
+	if hash pyenv 2>/dev/null && [ -d "$(pyenv root)/versions/neovim3" ]; then
+		# pyenv environments are setup so use them
+		[ -d "$venv/neovim3" ] || ln -s "$(pyenv root)/versions/neovim3" "$venv/neovim3"
+	else
+		[ -d "$venv/neovim3" ] || python3 -m venv "$venv/neovim3"
+	fi
+
+		if ! hash python3 2>/dev/null; then
+		echo "for Python 3 support install python 3 and python 3 pip and run just venv"
+	else
+		echo -e '\n:: PYTHON 3'
+		"$venv/neovim3/bin/pip" install -U \
+			pynvim \
+			yapf \
+			autopep8 \
+			pylint \
+			prospector \
+			flake8 \
+			pylama \
+			mypy \
+			mccabe \
+			isort \
+			jedi \
+			rope \
+			pycodestyle \
+			nodeenv \
+			'python-language-server[all]'
+	fi
+
+web:
+	#!/usr/bin/env bash
+	echo -e '\n:: Nodejs'
+	if [ -x "$(command -v npm)" ]; then
+		npm install -g neovim
+	else	
+		echo "Please install yarn or npm"
+		return 1
+	fi
+		#$js_install \
+		#neovim 
+		#bash-language-server
+		#eslint \
+		#prettier \
+		#eslint-config-prettier \
+		#eslint-plugin-prettier \
+		#ts-node \
+		#tslint \
+		#typescript \
+		#tern \
+		#jshint \
+		#jsxhint \ 
+		#jsonlint \
+		#stylelint \
+		#sass-lint \
+		#raml-cop \
+		#markdownlint-cli \
+		#write-good \
+		#eslint-cli
+
+# Install all packages
+pack:
+	pack install joshdick/onedark.vim
+	pack install sheerun/vim-polyglot
+	pack install liuchengxu/vim-clap
+	pack install SirVer/ultisnips
+	pack install Shougo/neoinclude.vim
+	pack install tpope/vim-endwise
+	pack install alvan/vim-closetag
+	pack install neoclide/coc.nvim --build 'yarn install --frozen-lockfile'
+	pack install lambdalisue/gina.vim
+	pack install ryanoasis/vim-devicons
+	pack install mhinz/vim-signify
+	pack install liuchengxu/vista.vim
+	pack install junegunn/rainbow_parentheses.vim
+	pack install Th3Whit3Wolf/vim-shebang
+	pack install ludovicchabant/vim-gutentags
+	pack install neovim/nvim-lsp
