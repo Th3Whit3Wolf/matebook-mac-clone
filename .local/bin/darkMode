@@ -1,16 +1,27 @@
-#!/bin/sh
+#!/bin/bash
+
+morning="07:00"
+night="19:00"
 
 # Get current time
 currenttime=$(date +%H:%M)
 
-# Check if time is between 7:00 PM and 7:00 AM
-if [[ "$currenttime" > "18:59" ]] || [[ "$currenttime" < "07:00" ]]; then
+changeKonsole() {
+  for service in `qdbus | grep org.kde.konsole-`; do
+      for session in `qdbus $service | grep ^/Sessions/`; do
+          qdbus $service $session org.kde.konsole.Session.setProfile $1
+      done
+  done
+}
 
-        #          ____             __  
+# Check if time is between night and morning time
+if [[ ! "$currenttime" < "$night" ]] || [[ "$currenttime" < "$morning" ]]; then
+
+        #          ____             __
         #         / __ \____ ______/ /__
         #        / / / / __ `/ ___/ //_/
-        #       / /_/ / /_/ / /  / ,<   
-        #      /_____/\__,_/_/  /_/|_|  
+        #       / /_/ / /_/ / /  / ,<
+        #      /_____/\__,_/_/  /_/|_|
 
     # Change Kvantum Theme
     kvantummanager --set McMojave
@@ -22,16 +33,24 @@ if [[ "$currenttime" > "18:59" ]] || [[ "$currenttime" < "07:00" ]]; then
     # Change KDE Theme
     lookandfeeltool -a 'com.github.vinceliuice.McMojave'
     # Change Gnome Theme
-    sed -i 's/gtk-theme-name=Mojave-light/gtk-theme-name=Mojave-dark/' ~/.config/gtk-3.0/settings.ini
+    sed -i 's/gtk-theme-name=Mojave-light/gtk-theme-name=Mojave-dark/' /home/doc/.config/gtk-3.0/settings.ini
+    # Change background wallpaper for login screen
+    sed -i 's/background=10-15-Day.jpg/background=10-15-Night.jpg/' /usr/share/sddm/themes/McMojave/theme.conf.user
+    # Change default konsole profile
+    sed -i 's/DefaultProfile=Light.profile/DefaultProfile=Dark.profile/' /home/.doc/.config/konsolerc
+    # Change theme off all konsole sessions
+    changeKonsole Dark
+    # Change bat theme
+    echo "--theme=OneHalfDark" > /home/doc/.config/bat/config
     echo "Dark Mode On"
 else
 
-        #          __    _       __    __ 
+        #          __    _       __    __
         #         / /   (_)___ _/ /_  / /_
         #        / /   / / __ `/ __ \/ __/
-        #       / /___/ / /_/ / / / / /_  
-        #      /_____/_/\__, /_/ /_/\__/  
-        #              /____/             
+        #       / /___/ / /_/ / / / / /_
+        #      /_____/_/\__, /_/ /_/\__/
+        #              /____/
 
     # Change Kvantum Theme
     kvantummanager --set McMojave-light
@@ -42,6 +61,14 @@ else
     # Change KDE Theme
     lookandfeeltool -a 'com.github.vinceliuice.McMojave-light'
     # Change Gnome Theme
-    sed -i 's/gtk-theme-name=Mojave-dark/gtk-theme-name=Mojave-light/' ~/.config/gtk-3.0/settings.ini
+    sed -i 's/gtk-theme-name=Mojave-dark/gtk-theme-name=Mojave-light/' /home/doc/.config/gtk-3.0/settings.ini
+    # Change background Wallpaper for login screen
+    sed -i 's/background=10-15-Night.jpg/background=10-15-Day.jpg/' /usr/share/sddm/themes/McMojave/theme.conf.user
+    # Change default konsole profile
+    sed -i 's/DefaultProfile=Dark.profile/DefaultProfile=Light.profile/' /home/.doc/.config/konsolerc
+    # Change theme off all konsole sessions
+    changeKonsole Light
+    # Change bat theme
+    echo "--theme=OneHalfLight" > /home/doc/.config/bat/config
     echo "Light Mode On"
 fi
