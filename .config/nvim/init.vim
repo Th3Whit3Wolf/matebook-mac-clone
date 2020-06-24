@@ -344,15 +344,20 @@ endif
 " Return to last edit position when opening files (You want this!)
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 " Close vista if it is the only open window
-autocmd bufenter * if winnr("$") == 1 && vista#sidebar#IsOpen() | execute "normal! :q!\<CR>" | endif
+autocmd BufEnter * if winnr("$") == 1 && vista#sidebar#IsOpen() | execute "normal! :q!\<CR>" | endif
 " Automatically check for new crate versions when opening Cargo.toml
 autocmd BufRead,BufNewFile Cargo.toml packadd vim-crates | call crates#toggle()
-" hook to call which_key#register(), e.g., register for the Space key:
-autocmd! User WhichKey packadd vim-which-key | call which_key#register('<Space>', 'g:which_key_map')
 " Trim whitespace before saving
 autocmd BufWritePre * :call TrimWhitespace()
 
-command! -nargs=* -range -bang WhichKey packadd vim-which-key | call which_key#register('<Space>', 'g:which_key_map')
+" Autoload packages
+augroup Pack
+	" Vim Which Key
+	command! -nargs=* -range -bang WhichKey packadd vim-which-key | call which_key#register('<Space>', 'g:which_key_map')
+	command! -nargs=* -range -bang WhichKeyVisual packadd vim-which-key | call which_key#register('<Space>', 'g:which_key_map')
+	" Vim Crates
+	autocmd BufRead,BufNewFile Cargo.toml packadd vim-crates | call crates#toggle()
+augroup END
 
 augroup MyAutoCmd
 	autocmd!
@@ -480,9 +485,13 @@ augroup miscGroup
 	autocmd FileType markdown let &makeprg='proselint %'
 	autocmd BufEnter,FocusGained * checktime
 	autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/
-	autocmd FileType rust nnoremap <buffer> <cr> :w<cr>:RustFmt<cr>:w<cr>
+	" autocmd FileType rust nnoremap <buffer> <cr> :w<cr>:RustFmt<cr>:w<cr>
 	" https://webpack.github.io/docs/webpack-dev-server.html#working-with-editors-ides-supporting-safe-write
 	autocmd FileType css,javascript,javascriptreact setlocal backupcopy=yes
+
+	autocmd! FileType which_key
+	autocmd  FileType which_key set laststatus=0 noshowmode noruler
+		\| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
 augroup END
 
 augroup cocNvim
@@ -494,6 +503,7 @@ augroup cocNvim
 	" Remove unused coc extension
 	autocmd User CocNvimInit call UninstallUnusedCocExtensions()
 augroup end
+
 augroup rainbow_lisp
 	autocmd!
 	autocmd FileType * RainbowParentheses 
@@ -501,6 +511,9 @@ augroup END
 """""""""""""""""""""""""""""
 " Mapping
 """""""""""""""""""""""""""""
+" Session management shortcuts (see plugin/sessions.vim)
+nmap <Leader>ss :<C-u>SessionSave<CR>
+nmap <Leader>sl :<C-u>SessionLoad<CR>
 " Terminal go back to normal mode
 tnoremap <Esc> <C-\><C-n>
 tnoremap :q! <C-\><C-n>:q!<CR>
@@ -580,7 +593,6 @@ nnoremap <F10> :call RunMyCode()<CR>
 let mapleader = "\<Space>"
 
 nnoremap <leader>T :call <SID>run_rust_tests()<cr>
-
 function! s:run_rust_tests()
 	if &modified
 		write
@@ -601,7 +613,6 @@ let g:buffet_always_show_tabline = 0
 let g:buffet_powerline_separators = 1
 let g:buffet_show_index = 1
 let g:coc_snippet_next = '<tab>'
-
 
 let g:vista_executive_for = {
 	\ 'go': 'ctags',
@@ -658,62 +669,67 @@ let g:dashboard_custom_header = [
         \ ]
 let quote = systemlist('pquote')
 let g:dashboard_custom_footer = quote
-nmap <Leader>ss :<C-u>SessionSave<CR>
-nmap <Leader>sl :<C-u>SessionLoad<CR>
 nnoremap <silent> <Leader>fh :<C-u>Clap history<CR>
 nnoremap <silent> <Leader>ff :<C-u>Clap files ++finder=rg --ignore --hidden --files<cr>
-nnoremap <silent> <Leader>tc :<C-u>Clap colors<CR>
 nnoremap <silent> <Leader>fa :<C-u>Clap grep2<CR>
 nnoremap <silent> <Leader>fb :<C-u>Clap marks<CR>
 
-let g:dashboard_custom_shortcut={
-	\ 'last_session' : 'SPC s l',
-	\ 'find_history' : 'SPC f h',
-	\ 'find_file' : 'SPC f f',
-	\ 'change_colorscheme' : 'SPC t c',
-	\ 'find_word' : 'SPC f a',
-	\ 'book_marks' : 'SPC f b',
+let g:dashboard_custom_section={
+	\ 'last_session' :[' Recently used session                SPC sl '],
+	\ 'find_history' :['ﭯ Recently opened files                SPC fh '],
+    \ 'find_file'    :[' Find File                            SPC ff '],
+    \ 'find_word'    :[' Find word                            SPC fa '],
+    \ 'book_marks'   :[' Jump to book marks                   SPC fb '],
 	\ }
+
+function! BOOK_MARKS()
+	Clap marks
+endfunction
+
+function! FIND_FILE()
+	Clap files ++finder=rg --ignore --hidden
+endfunction
+
+function! FIND_HISTORY()
+	Clap history
+endfunction
+
+function! FIND_WORD()
+	Clap grep2
+endfunction
 " filenames like *.xml, *.html, *.xhtml, ...
 " These are the file extensions where this plugin is enabled.
-"
 let g:closetag_filenames = '*.html,*.xhtml,*.phtml'
 
 " filenames like *.xml, *.xhtml, ...
 " This will make the list of non-closing tags self-closing in the specified files.
-"
 let g:closetag_xhtml_filenames = '*.xhtml,*.jsx'
 
 " filetypes like xml, html, xhtml, ...
 " These are the file types where this plugin is enabled.
-"
 let g:closetag_filetypes = 'html,xhtml,phtml'
 
 " filetypes like xml, xhtml, ...
 " This will make the list of non-closing tags self-closing in the specified files.
-"
 let g:closetag_xhtml_filetypes = 'xhtml,jsx'
 
 " integer value [0|1]
 " This will make the list of non-closing tags case-sensitive (e.g. `<Link>` will be closed while `<link>` won't.)
-"
 let g:closetag_emptyTags_caseSensitive = 1
 
 " dict
 " Disables auto-close if not in a "valid" region (based on filetype)
-"
 let g:closetag_regions = {
     \ 'typescript.tsx': 'jsxRegion,tsxRegion',
     \ 'javascript.jsx': 'jsxRegion',
     \ }
 
 " Shortcut for closing tags, default is '>'
-"
 let g:closetag_shortcut = '>'
 
 " Add > at current position without closing the current tag, default is ''
-"
 let g:closetag_close_shortcut = '<leader>>'
+
 """""""""""""""""""""""""""""
 " Plugin Mappings
 """""""""""""""""""""""""""""
@@ -736,11 +752,11 @@ nnoremap<C-p> :Clap files<CR>
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Symbol renaming.
-nmap <leader>rn <Plug>(coc-rename)
+nmap <leader>cr <Plug>(coc-rename)
 
 " Formatting selected code.
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
+xmap <leader>cf  <Plug>(coc-format-selected)
+nmap <leader>cf  <Plug>(coc-format-selected)
 
 " Use <C-j> and <C-k> to navigate the completion list:
 inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
@@ -771,13 +787,13 @@ nmap <silent> gr <Plug>(coc-references)
 
 " Applying codeAction to the selected region.
 " Example: `<leader>aap` for current paragraph
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
+xmap <leader>cas  <Plug>(coc-codeaction-selected)
+nmap <leader>cas  <Plug>(coc-codeaction-selected)
 
 " Remap keys for applying codeAction to the current buffer.
-nmap <leader>ac  <Plug>(coc-codeaction)
+nmap <leader>ca  <Plug>(coc-codeaction)
 " Apply AutoFix to problem on the current line.
-nmap <leader>qf  <Plug>(coc-fix-current)
+nmap <leader>cqf  <Plug>(coc-fix-current)
 
 " Map function and class text objects
 " NOTE: Requires 'textDocument.documentSymbol' support from the language server.
@@ -806,49 +822,72 @@ command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organize
 
 " Mappings for CoCList
 " Show all diagnostics.
-nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
+nnoremap <silent><nowait> <space>cld  :<C-u>CocList diagnostics<cr>
 " Manage extensions.
-nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
+nnoremap <silent><nowait> <leader>cle  :<C-u>CocList extensions<cr>
 " Show commands.
-nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
+nnoremap <silent><nowait> <leader>clc  :<C-u>CocList commands<cr>
 " Find symbol of current document.
-nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
+nnoremap <silent><nowait> <leader>clo  :<C-u>CocList outline<cr>
 " Search workspace symbols.
-nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
-" Do default action for next item.
-nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
-" Do default action for previous item.
-nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
+nnoremap <silent><nowait> <leader>cls  :<C-u>CocList -I symbols<cr>
 " Resume latest coc list.
-nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+nnoremap <silent><nowait> <leader>clr  :<C-u>CocListResume<CR>
+" Do default action for next item.
+nnoremap <silent><nowait> <leader>j  :<C-u>CocNext<CR>
+" Do default action for previous item.
+nnoremap <silent><nowait> <leader>k  :<C-u>CocPrev<CR>
 
 nnoremap <silent> <leader> :<c-u>WhichKey '<Space>'<CR>
 vnoremap <silent> <leader> :<c-u>WhichKeyVisual '<Space>'<CR>
 
 " Define prefix dictionary
-let g:which_key_map =  {}
+let g:which_key_map =  {
+	\ '1' : 'Switch to Buffer 1'  ,
+	\ '2' : 'Switch to Buffer 2'  ,
+	\ '3' : 'Switch to Buffer 3'  ,
+	\ '4' : 'Switch to Buffer 4'  ,
+	\ '5' : 'Switch to Buffer 5'  ,
+	\ '6' : 'Switch to Buffer 6'  ,
+	\ '7' : 'Switch to Buffer 7'  ,
+	\ '8' : 'Switch to Buffer 8'  ,
+	\ '9' : 'Switch to Buffer 9'  ,
+	\ '0' : 'Switch to Buffer 10'  ,
+	\ 'j' : 'Coc Action Next'     , 
+	\ 'k' : 'Coc Action Previous' ,
+	\ 'T' : 'Run Rust Tests'
+	\ }
 
-" Second level dictionaries:
-" 'name' is a special field. It will define the name of the group, e.g., leader-f is the "+file" group.
-" Unnamed groups will show a default empty string.
+let g:which_key_map['c'] = {
+	\ 'name' : '+Code' ,
+	\ 'a'    : 'Codeaction Current Buffer'  ,
+	\ 'clc'  : 'CocList Commands'  ,
+	\ 'cld'  : 'CocList Diagnostics'  ,
+	\ 'cle'  : 'CocList Extensions'  ,
+	\ 'clo'  : 'CocList Outline'  ,
+	\ 'clr'  : 'CocList Resume'  ,
+	\ 'cls'  : 'CocList Symbols'  ,
+	\ 'f'    : 'Format Selected Code'  ,
+	\ 'qf'   : 'Fix Problem on Current Line'  ,
+	\ 'r'    : 'Rename Symbols '  ,
+	\ }
 
-" =======================================================
-" Create menus based on existing mappings
-" =======================================================
-" You can pass a descriptive text to an existing mapping.
+let g:which_key_map['f'] = {
+	\ 'name' : '+Find' ,
+	\ 'a' : 'Find Word'  ,
+	\ 'b' : 'Bookmarks'  ,
+	\ 'f' : 'Find File'  ,
+	\ 'h' : 'History  '  ,
+	\ }
 
-let g:which_key_map.f = { 'name' : '+file' }
+let g:which_key_map['g'] = {
+	\ 'name' : '+Git' ,
+	\ 'm' : 'Git Messenger'  ,
+	\ }
 
-nnoremap <silent> <leader>fs :update<CR>
-let g:which_key_map.f.s = 'save-file'
+let g:which_key_map['s'] = {
+	\ 'name' : '+Session'     ,
+	\ 'sl'   : 'Load Session' ,
+	\ 'ss'   : 'Load Save'    ,
+	\ }
 
-nnoremap <silent> <leader>fd :e $MYVIMRC<CR>
-let g:which_key_map.f.d = 'open-vimrc'
-
-nnoremap <silent> <leader>oq  :copen<CR>
-nnoremap <silent> <leader>ol  :lopen<CR>
-let g:which_key_map.o = {
-      \ 'name' : '+open',
-      \ 'q' : 'open-quickfix'    ,
-      \ 'l' : 'open-locationlist',
-      \ }
