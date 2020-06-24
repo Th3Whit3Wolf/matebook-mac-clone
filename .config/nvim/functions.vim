@@ -103,6 +103,12 @@ function! CheckBackSpace() abort
 	return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
+function! TrimWhitespace()
+    let l:save = winsaveview()
+    keeppatterns %s/\s\+$//e
+    call winrestview(l:save)
+endfunction
+
 function! ShowDocumentation()
 	if (index(['vim','help'], &filetype) >= 0)
 		execute 'h '.expand('<cword>')
@@ -110,3 +116,225 @@ function! ShowDocumentation()
 		call CocAction('doHover')
 	endif
 endfunction
+
+" Creates a floating window with a most recent buffer to be used
+function! CreateCenteredFloatingWindow()
+    let width = float2nr(&columns * 0.6)
+    let height = float2nr(&lines * 0.6)
+    let top = ((&lines - height) / 2) - 1
+    let left = (&columns - width) / 2
+    let opts = {'relative': 'editor', 'row': top, 'col': left, 'width': width, 'height': height, 'style': 'minimal'}
+
+    let top = "╭" . repeat("─", width - 2) . "╮"
+    let mid = "│" . repeat(" ", width - 2) . "│"
+    let bot = "╰" . repeat("─", width - 2) . "╯"
+    let lines = [top] + repeat([mid], height - 2) + [bot]
+    let s:buf = nvim_create_buf(v:false, v:true)
+    call nvim_buf_set_lines(s:buf, 0, -1, v:true, lines)
+    call nvim_open_win(s:buf, v:true, opts)
+    set winhl=Normal:Pmenu
+    let opts.row += 1
+    let opts.height -= 2
+    let opts.col += 2
+    let opts.width -= 4
+    call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
+    au BufWipeout <buffer> exe 'bw '.s:buf
+endfunction
+if executable('lazygit')
+	function! OpenTerm(cmd)
+		call CreateCenteredFloatingWindow()
+		call termopen(a:cmd, { 'on_exit': function('OnTermExit') })
+	endfunction
+
+	function! OpenLazyGit()
+		call OpenTerm('lazygit')
+		startinsert
+	endfunction
+
+	function! OnTermExit(job_id, code, event) dict
+		if a:code == 0
+			bd!
+		endif
+	endfunction
+endif
+
+let c_flags = "-D_FORTIFY_SOURCE=2 -D_GLIBCXX_ASSERTIONS -fasynchronous-unwind-tables -fexceptions -fpie -Wl,-pie -fpic -shared -fplugin=annobin -fstack-clash-protection -fstack-protector-strong -g -grecord-gcc-switches -mcet -fcf-protection -pipe -Wall -Werror=format-security -Werror=implicit-function-declaration -Wl,-z,defs -Wl,-z,now -Wl,-z,relro"
+
+function CompileMyCode()
+    exec 'w'
+    if &filetype == 'c'
+		if executable('gcc')
+			exec "AsyncRun! gcc % -o %< " + c_flags
+		endif
+	elseif &filetype == 'cpp'
+		if executable('g++')
+			exec "AsyncRun! g++ -std=c++17 % -o %< " + c_flags
+		endif
+	elseif &filetype == 'go'
+		if executable('go')
+			exec "AsyncRun! go build %"
+		else
+			echo 'Go is not installed!'
+		endif
+	elseif &filetype == 'haskell'
+		if executable('ghc')
+			exec "AsyncRun! ghc % -o %<"
+		else
+			echo 'Haskell is not installed!'
+		endif
+	elseif &filetype == 'java'
+		if executable('javac')
+			exec "AsyncRun! javac %"
+		else
+			echo 'Java is not installed!'
+		endif
+	elseif &filetype == 'rust'
+		if executable('cargo')
+			exec "AsyncRun! cargo build --release"
+		else
+			echo 'Rust is not installed or this is not a cargo project'
+		endif
+	endif
+endfunction
+
+function! RunMyCode()
+    exec 'w'
+    if &filetype == 'c'
+		if executable('gcc')
+			exec "AsyncRun! gcc % -o %<  " + c_flags +"; ./%<"
+			exec bufnr('$') . 'bw'
+		endif
+	elseif &filetype == 'cpp'
+		if executable('g++')
+			exec "AsyncRun! g++ -std=c++17 % -o %< " + c_flags +"; ./%<"
+			exec bufnr('$') . 'bw'
+		endif
+	elseif &filetype == 'rust'
+		if executable('cargo')
+			exec "AsyncRun! cargo run"
+			exec bufnr('$') . 'bw'
+		else
+			echo 'Rust is not installed or this is not a cargo project'
+		endif
+	elseif &filetype == 'html'
+		let g:bracey_refresh_on_save = 1
+		Bracey
+	elseif &filetype == 'java'
+		if executable('javac')
+			exec "AsyncRun! javac %"
+			exec bufnr('$') . 'bw'
+		else
+			echo 'Java is not installed!'
+		endif
+	elseif &filetype == 'sh'
+		if getline(1)[0:18] ==# "#!/usr/bin/env bash" || getline(1)[0:14] ==# "#!/usr/bin/bash"
+			if executable('bash')
+				exec "AsyncRun! bash %"
+				exec bufnr('$') . 'bw'
+			else
+				echo 'Bash is not installed!'
+			endif
+		elseif getline(1)[0:18] ==# "#!/usr/bin/env dash" || getline(1)[0:14] ==# "#!/usr/bin/dash"
+			if executable('dash')
+				exec "AsyncRun! dash %"
+				exec bufnr('$') . 'bw'
+			else
+				echo 'Dash is not installed!'
+			endif
+		elseif getline(1)[0:18] ==# "#!/usr/bin/env fish" || getline(1)[0:14] ==# "#!/usr/bin/fish"
+			if executable('fish')
+				exec "AsyncRun! fish %"
+				exec bufnr('$') . 'bw'
+			else
+				echo 'Fish is not installed!'
+			endif
+		elseif getline(1)[0:18] ==# "#!/usr/bin/env tcsh" || getline(1)[0:14] ==# "#!/usr/bin/tcsh"
+			if executable('tcsh')
+				exec "AsyncRun! tcsh %"
+				exec bufnr('$') . 'bw'
+			else
+				echo 'Tcsh is not installed!'
+			endif
+		elseif getline(1)[0:17] ==# "#!/usr/bin/env csh" || getline(1)[0:13] ==# "#!/usr/bin/csh"
+			if executable('csh')
+				exec "AsyncRun! csh %"
+				exec bufnr('$') . 'bw'
+			else
+				echo 'Csh is not installed!'
+			endif
+		elseif getline(1)[0:17] ==# "#!/usr/bin/env ksh" || getline(1)[0:13] ==# "#!/usr/bin/ksh"
+			if executable('ksh')
+				exec "AsyncRun! ksh %"
+				exec bufnr('$') . 'bw'
+			else
+				echo 'Ksh is not installed!'
+			endif
+		elseif getline(1)[0:17] ==# "#!/usr/bin/env zsh" || getline(1)[0:13] ==# "#!/usr/bin/zsh"
+			if executable('zsh')
+				exec "AsyncRun! zsh %"
+				exec bufnr('$') . 'bw'
+			else
+				echo 'Zsh is not installed!'
+			endif
+		endif
+	elseif &filetype == 'python'
+		if getline(1)[0:21] ==# "#!/usr/bin/env python3" || getline(1)[0:17] ==# "#!/usr/bin/python3"
+			if executable('python3')
+				exec "AsyncRun! python3 %"
+				exec bufnr('$') . 'bw'
+			else
+				echo 'Python3 is not installed!'
+			endif
+		elseif getline(1)[0:21] ==# "#!/usr/bin/env python2" || getline(1)[0:17] ==# "#!/usr/bin/python2"
+			if executable('python2')
+				exec "AsyncRun! python2 %"
+				exec bufnr('$') . 'bw'
+			else
+				echo 'Python2 is not installed!'
+			endif
+		elseif getline(1)[0:20] ==# "#!/usr/bin/env python" || getline(1)[0:16] ==# "#!/usr/bin/python"
+			if executable('python')
+				exec "AsyncRun! python %"
+				exec bufnr('$') . 'bw'
+			else
+				echo 'Python executable can not be found!'
+			endif
+		elseif getline(1)[0:19] ==# "#!/usr/bin/env pypy3" || getline(1)[0:15] ==# "#!/usr/bin/pypy3"
+			if executable('pypy3')
+				exec "AsyncRun! pypy3 %"
+				exec bufnr('$') . 'bw'
+			else
+				echo 'Pypy3 is not installed!'
+			endif
+		elseif getline(1)[0:18] ==# "#!/usr/bin/env pypy" || getline(1)[0:14] ==# "#!/usr/bin/pypy"
+			if executable('pypy')
+				exec "AsyncRun! pypy %"
+				exec bufnr('$') . 'bw'
+			else
+				echo 'Pypy is not installed!'
+			endif
+		elseif getline(1)[0:20] ==# "#!/usr/bin/env jython" || getline(1)[0:16] ==# "#!/usr/bin/jython"
+			if executable('jython')
+				exec "AsyncRun! jython %"
+				exec bufnr('$') . 'bw'
+			else
+				echo 'Jython is not installed!'
+			endif
+		endif
+	elseif &filetype == 'go'
+		if executable('go')
+			exec "AsyncRun! go run %"
+			exec bufnr('$') . 'bw'
+		else
+			echo 'Go is not installed!'
+		endif
+	elseif &filetype == 'haskell'
+		if executable('ghc')
+			exec "AsyncRun! ghc % -o %<"
+			exec bufnr('$') . 'bw'
+		else
+			echo 'Haskell is not installed!'
+		endif
+	endif
+endfunction
+let g:asyncrun_open = 12

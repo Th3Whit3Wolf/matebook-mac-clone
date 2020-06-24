@@ -1,7 +1,20 @@
 v := "v0.2.5"
 os := "x86_64-unknown-linux-gnu"
+vim_endwise := "c,cpp,xdefaaults,haskell,objc,make,verilog,matlab,htmldjango,vim,vb,vbnet,aspvbs,sh,zsh,ruby,elixir,lua,crystal,htmljinja,jina.html,snippets"
+tags := `echo$(ctags --list-languages) | sed 's/ /,/g'`
+
 # Install Super Sayain Vim
 install: initialize venv _init_pack
+	#!/bin/bash
+	if ! hash cargo 2>/dev/null; then
+		echo "Rust installation not found."
+		exit 1
+	fi
+	cargo install --git https://github.com/Th3Whit3Wolf/pquote
+	if ! hash node 2>/dev/null; then
+		echo "nodejs installation not found."
+		exit 1
+	fi
 	echo "Super Saiyan Vim Installed Sucessfully"
 
 initialize: 
@@ -11,6 +24,7 @@ initialize:
 	mkdir -vp {{env_var_or_default('XDG_CACHE_HOME', '$HOME/.cache')}}/vim/tags
 	mkdir -vp {{env_var_or_default('XDG_CACHE_HOME', '$HOME/.cache')}}/vim/undo
 	mkdir -vp {{env_var_or_default('XDG_CACHE_HOME', '$HOME/.cache')}}/vim/venv
+	mkdir -vp {{env_var_or_default('XDG_CACHE_HOME', '$HOME/.cache')}}/vim/lsp
 
 _init_pack:
 	#!/usr/bin/bash	
@@ -30,7 +44,8 @@ update:
 uninstall:
 	rm -rf {{env_var_or_default('XDG_CACHE_HOME', '$HOME/.cache')}}/vim
 
-_venv2:
+# Setup Python2 Virtual Environment
+venv2:
 	#!/usr/bin/env bash
 	venv="${XDG_CACHE_HOME:-$HOME/.cache}/vim/venv"
 	# Try to detect python2/3 executables
@@ -60,7 +75,7 @@ _venv2:
 			pylama
 	fi
 
-# Setup virtual environments for python
+# Setup Python3 Virtual Environment
 venv:
 	#!/usr/bin/env bash
 	venv="${XDG_CACHE_HOME:-$HOME/.cache}/vim/venv"
@@ -132,19 +147,22 @@ web:
 
 # Install all packages
 pack:
-	pack install joshdick/onedark.vim
 	pack install sheerun/vim-polyglot
 	pack install liuchengxu/vim-clap
 	pack install SirVer/ultisnips
-	pack install Shougo/neoinclude.vim
-	pack install tpope/vim-endwise
-	pack install alvan/vim-closetag
+	pack install Shougo/echodoc
+	pack install tpope/vim-endwise --for {{vim_endwise}}
+	pack install turbio/bracey.vim --for html,css,javascript
+	pack install euclio/vim-markdown-composer --build 'cargo build --release' --for markdown
+	pack install alvan/vim-closetag --for html,xhtml,xml,phtml,jsx
 	pack install neoclide/coc.nvim --build 'yarn install --frozen-lockfile'
 	pack install lambdalisue/gina.vim
 	pack install ryanoasis/vim-devicons
 	pack install mhinz/vim-signify
+	pack install mhinz/vim-crates -o
 	pack install liuchengxu/vista.vim
 	pack install junegunn/rainbow_parentheses.vim
 	pack install Th3Whit3Wolf/vim-shebang
-	pack install ludovicchabant/vim-gutentags
-	pack install neovim/nvim-lsp
+	pack install ludovicchabant/vim-gutentags --for {{tags}}
+	pack install hardcoreplayers/dashboard-nvim
+	pack install liuchengxu/vim-which-key --on WhichKey,WhichKey!

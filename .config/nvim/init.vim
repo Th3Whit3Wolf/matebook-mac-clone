@@ -8,6 +8,10 @@ let $VIMPATH = fnamemodify(resolve(expand('<sfile>:p')), ':h:h')
 let $DATA_PATH =
 	\ expand(($XDG_CACHE_HOME ? $XDG_CACHE_HOME : '~/.cache') . '/vim')
 
+if isdirectory($DATA_PATH . '/venv/neovim2')
+	let g:python_host_prog = $DATA_PATH . '/venv/neovim2/bin/python'
+endif
+
 if isdirectory($DATA_PATH . '/venv/neovim3')
 	let g:python3_host_prog = $DATA_PATH . '/venv/neovim3/bin/python'
 endif
@@ -109,7 +113,7 @@ set synmaxcol=1000           " Don't syntax highlight long lines
 set formatoptions+=1         " Don't break lines after a one-letter word
 set formatoptions-=t         " Don't auto-wrap text
 set guioptions=M
-set lazyredraw                " Don't redraw screen while running macros
+set lazyredraw               " Don't redraw screen while running macros
 
 " What to save for views:
 set viewoptions-=options
@@ -165,7 +169,7 @@ set shada='300,<50,@100,s10,h
 " Tabs and Indents
 """""""""""""""""""""""""""""
 set textwidth=100   " Text width maximum chars before wrapping
-set noexpandtab     " Don't expand tabs to spaces.
+set expandtab       " Expand tabs to spaces.
 set tabstop=2       " The number of spaces a tab is
 set softtabstop=2   " While performing editing operations
 set shiftwidth=2    " Number of spaces to use in auto(indent)
@@ -196,6 +200,7 @@ set cpoptions-=m    " showmatch will wait 0.5s or until a char is typed
 if executable('rg')
 	set grepformat=%f:%l:%m
 	let &grepprg = 'rg --vimgrep' . (&smartcase ? ' --smart-case' : '')
+	let g:rg_derive_root='true'
 endif
 """"""""""""""""""""""""""""""
 "          Behavior          "
@@ -333,7 +338,6 @@ endif
 if executable('vls')
 	let g:coc_global_extensions += ['coc-vetur']
 endif
-
 """""""""""""""""""""""""""""
 " Auto Commands
 """""""""""""""""""""""""""""
@@ -341,6 +345,12 @@ endif
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 " Close vista if it is the only open window
 autocmd bufenter * if winnr("$") == 1 && vista#sidebar#IsOpen() | execute "normal! :q!\<CR>" | endif
+" Automatically check for new crate versions when opening Cargo.toml
+autocmd BufRead Cargo.toml packadd vim-crates | call crates#toggle()
+" hook to call which_key#register(), e.g., register for the Space key:
+autocmd! User WhichKey packadd vim-which-key | call which_key#register('<Space>', 'g:which_key_map')
+" Trim whitespace before saving
+autocmd BufWritePre * :call TrimWhitespace()
 augroup MyAutoCmd
 	autocmd!
 	autocmd Syntax * if line('$') > 5000 | syntax sync minlines=300 | endif
@@ -488,11 +498,6 @@ augroup END
 """""""""""""""""""""""""""""
 " Mapping
 """""""""""""""""""""""""""""
-" Toggle terminal on/off (neovim)
-nnoremap <A-t> :call TermToggle(10)<CR>
-inoremap <A-t> <Esc>:call TermToggle(10)<CR>
-tnoremap <A-t> <C-\><C-n>:call TermToggle(10)<CR>
-
 " Terminal go back to normal mode
 tnoremap <Esc> <C-\><C-n>
 tnoremap :q! <C-\><C-n>:q!<CR>
@@ -557,13 +562,21 @@ xnoremap > >gv|
 "nmap <Tab>   >>_
 "nmap <S-Tab> <<_
 
+" Toggle terminal on/off (neovim)
+nnoremap <A-t> :call TermToggle(10)<CR>
+inoremap <A-t> <Esc>:call TermToggle(10)<CR>
+tnoremap <A-t> <C-\><C-n>:call TermToggle(10)<CR>
+
+" Code Runner
+nnoremap <F9>  :call CompileMyCode()<CR>
+nnoremap <F10> :call RunMyCode()<CR>
+
 """""""""""""""""""""""""""""
 " Leader Mappings
 """""""""""""""""""""""""""""
 let mapleader = "\<Space>"
 
 nnoremap <leader>T :call <SID>run_rust_tests()<cr>
-nnoremap <leader>D :w<cr>:Dispatch cargo doc<cr>
 
 function! s:run_rust_tests()
 	if &modified
@@ -574,8 +587,24 @@ endfunction
 """""""""""""""""""""""""""""
 " Plugin Configs
 """""""""""""""""""""""""""""
+" vim-buffet
+let g:buffet_use_devicons = 1
+let g:buffet_show_index = 1
+let g:buffet_modified_icon = "+"
+let g:buffet_tab_icon = "\uf00a"
+let g:buffet_left_trunc_icon = "\uf0a8"
+let g:buffet_right_trunc_icon = "\uf0a9"
+let g:buffet_always_show_tabline = 0
+let g:buffet_powerline_separators = 1
+let g:buffet_show_index = 1
 let g:coc_snippet_next = '<tab>'
 
+let g:vista_executive_for = {
+	\ 'go': 'ctags',
+	\ 'javascript': 'coc',
+	\ 'javascript.jsx': 'coc',
+	\ 'python': 'ctags',
+	\ }
 " How each level is indented and what to prepend.
 " This could make the display more compact or more spacious.
 " e.g., more compact: ["▸ ", ""]
@@ -602,10 +631,101 @@ let g:vista#renderer#icons = {
 
 let g:rainbow#max_level = 16
 let g:rainbow#pairs = [['(', ')'], ['[', ']']]
+let g:dashboard_custom_header = [
+        \ '',
+        \ '                    ''c.',
+        \ '                 ,xNMM.',
+        \ '               .OMMMMo',
+        \ '               OMMM0,',
+        \ '     .;loddo:'' loolloddol;.',
+        \ '   cKMMMMMMMMMMNWMMMMMMMMMM0:',
+        \ ' .KMMMMMMMMMMMMMMMMMMMMMMMWd.',
+        \ ' XMMMMMMMMMMMMMMMMMMMMMMMX.',
+        \ ';MMMMMMMMMMMMMMMMMMMMMMMM:',
+        \ ':MMMMMMMMMMMMMMMMMMMMMMMM:',
+        \ '.MMMMMMMMMMMMMMMMMMMMMMMMX.',
+        \ ' kMMMMMMMMMMMMMMMMMMMMMMMMWd.',
+        \ ' .XMMMMMMMMMMMMMMMMMMMMMMMMMMk',
+        \ '  .XMMMMMMMMMMMMMMMMMMMMMMMMK.',
+        \ '    kMMMMMMMMMMMMMMMMMMMMMMd',
+        \ '     ;KMMMMMMMWXXWMMMMMMMk.',
+        \ '       .cooc,.    .,coo:.',
+        \ '',
+        \ ]
+let quote = systemlist('pquote')
+let g:dashboard_custom_footer = quote
+nmap <Leader>ss :<C-u>SessionSave<CR>
+nmap <Leader>sl :<C-u>SessionLoad<CR>
+nnoremap <silent> <Leader>fh :<C-u>Clap history<CR>
+nnoremap <silent> <Leader>ff :<C-u>Clap files ++finder=rg --ignore --hidden --files<cr>
+nnoremap <silent> <Leader>tc :<C-u>Clap colors<CR>
+nnoremap <silent> <Leader>fa :<C-u>Clap grep2<CR>
+nnoremap <silent> <Leader>fb :<C-u>Clap marks<CR>
+
+let g:dashboard_custom_shortcut={
+	\ 'last_session' : 'SPC s l',
+	\ 'find_history' : 'SPC f h',
+	\ 'find_file' : 'SPC f f',
+	\ 'change_colorscheme' : 'SPC t c',
+	\ 'find_word' : 'SPC f a',
+	\ 'book_marks' : 'SPC f b',
+	\ }
+" filenames like *.xml, *.html, *.xhtml, ...
+" These are the file extensions where this plugin is enabled.
+"
+let g:closetag_filenames = '*.html,*.xhtml,*.phtml'
+
+" filenames like *.xml, *.xhtml, ...
+" This will make the list of non-closing tags self-closing in the specified files.
+"
+let g:closetag_xhtml_filenames = '*.xhtml,*.jsx'
+
+" filetypes like xml, html, xhtml, ...
+" These are the file types where this plugin is enabled.
+"
+let g:closetag_filetypes = 'html,xhtml,phtml'
+
+" filetypes like xml, xhtml, ...
+" This will make the list of non-closing tags self-closing in the specified files.
+"
+let g:closetag_xhtml_filetypes = 'xhtml,jsx'
+
+" integer value [0|1]
+" This will make the list of non-closing tags case-sensitive (e.g. `<Link>` will be closed while `<link>` won't.)
+"
+let g:closetag_emptyTags_caseSensitive = 1
+
+" dict
+" Disables auto-close if not in a "valid" region (based on filetype)
+"
+let g:closetag_regions = {
+    \ 'typescript.tsx': 'jsxRegion,tsxRegion',
+    \ 'javascript.jsx': 'jsxRegion',
+    \ }
+
+" Shortcut for closing tags, default is '>'
+"
+let g:closetag_shortcut = '>'
+
+" Add > at current position without closing the current tag, default is ''
+"
+let g:closetag_close_shortcut = '<leader>>'
 """""""""""""""""""""""""""""
 " Plugin Mappings
 """""""""""""""""""""""""""""
+" vim buffet
+nmap <leader>1 <Plug>BuffetSwitch(1)
+nmap <leader>2 <Plug>BuffetSwitch(2)
+nmap <leader>3 <Plug>BuffetSwitch(3)
+nmap <leader>4 <Plug>BuffetSwitch(4)
+nmap <leader>5 <Plug>BuffetSwitch(5)
+nmap <leader>6 <Plug>BuffetSwitch(6)
+nmap <leader>7 <Plug>BuffetSwitch(7)
+nmap <leader>8 <Plug>BuffetSwitch(8)
+nmap <leader>9 <Plug>BuffetSwitch(9)
+nmap <leader>0 <Plug>BuffetSwitch(10)
 
+nnoremap<C-p> :Clap files<CR>
 """" Conqueror of Completion """"
 
 " Highlight the symbol and its references when holding the cursor.
@@ -618,7 +738,7 @@ nmap <leader>rn <Plug>(coc-rename)
 xmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format-selected)
 
-" Use <C-j> and <C-kta> to navigate the completion list:
+" Use <C-j> and <C-k> to navigate the completion list:
 inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
 inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
 
@@ -645,16 +765,6 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
-" Highlight the symbol and its references when holding the cursor.
-autocmd CursorHold * silent call CocActionAsync('highlight')
-
-" Symbol renaming.
-nmap <leader>rn <Plug>(coc-rename)
-
-" Formatting selected code.
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
-
 " Applying codeAction to the selected region.
 " Example: `<leader>aap` for current paragraph
 xmap <leader>a  <Plug>(coc-codeaction-selected)
@@ -678,8 +788,8 @@ omap ac <Plug>(coc-classobj-a)
 
 " Use CTRL-S for selections ranges.
 " Requires 'textDocument/selectionRange' support of LS, ex: coc-tsserver
-nmap <silent> <C-s> <Plug>(coc-range-select)
-xmap <silent> <C-s> <Plug>(coc-range-select)
+nmap <silent> <C-d> <Plug>(coc-range-select)
+xmap <silent> <C-d> <Plug>(coc-range-select)
 
 " Add `:Format` command to format current buffer.
 command! -nargs=0 Format :call CocAction('format')
@@ -708,19 +818,33 @@ nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list.
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
-"""""""""""""""""""""""""""""
-" Lightline
-"""""""""""""""""""""""""""""
+nnoremap <silent> <leader> :<c-u>WhichKey '<Space>'<CR>
+vnoremap <silent> <leader> :<c-u>WhichKeyVisual '<Space>'<CR>
 
+" Define prefix dictionary
+let g:which_key_map =  {}
 
-function MyGitStatus() abort
-	let branch = gina#component#repo#branch()
-	let unstaged = gina#component#status#unstaged()
-	let conflicted = gina#component#status#conflicted()
-	return printf(
-		\ '%s, u: %s, c: %s',
-		\ branch,
-		\ unstaged,
-		\ conflicted,
-		\)
-endfunction
+" Second level dictionaries:
+" 'name' is a special field. It will define the name of the group, e.g., leader-f is the "+file" group.
+" Unnamed groups will show a default empty string.
+
+" =======================================================
+" Create menus based on existing mappings
+" =======================================================
+" You can pass a descriptive text to an existing mapping.
+
+let g:which_key_map.f = { 'name' : '+file' }
+
+nnoremap <silent> <leader>fs :update<CR>
+let g:which_key_map.f.s = 'save-file'
+
+nnoremap <silent> <leader>fd :e $MYVIMRC<CR>
+let g:which_key_map.f.d = 'open-vimrc'
+
+nnoremap <silent> <leader>oq  :copen<CR>
+nnoremap <silent> <leader>ol  :lopen<CR>
+let g:which_key_map.o = {
+      \ 'name' : '+open',
+      \ 'q' : 'open-quickfix'    ,
+      \ 'l' : 'open-locationlist',
+      \ }
