@@ -165,4 +165,5 @@ pack:
 	pack install Th3Whit3Wolf/vim-shebang
 	pack install ludovicchabant/vim-gutentags --for {{tags}}
 	pack install hardcoreplayers/dashboard-nvim
-	pack install liuchengxu/vim-which-key --on WhichKey,WhichKey!
+	pack install liuchengxu/vim-which-key -o
+	pack install rhysd/git-messenger.vim

@@ -346,11 +346,14 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 " Close vista if it is the only open window
 autocmd bufenter * if winnr("$") == 1 && vista#sidebar#IsOpen() | execute "normal! :q!\<CR>" | endif
 " Automatically check for new crate versions when opening Cargo.toml
-autocmd BufRead Cargo.toml packadd vim-crates | call crates#toggle()
+autocmd BufRead,BufNewFile Cargo.toml packadd vim-crates | call crates#toggle()
 " hook to call which_key#register(), e.g., register for the Space key:
 autocmd! User WhichKey packadd vim-which-key | call which_key#register('<Space>', 'g:which_key_map')
 " Trim whitespace before saving
 autocmd BufWritePre * :call TrimWhitespace()
+
+command! -nargs=* -range -bang WhichKey packadd vim-which-key | call which_key#register('<Space>', 'g:which_key_map')
+
 augroup MyAutoCmd
 	autocmd!
 	autocmd Syntax * if line('$') > 5000 | syntax sync minlines=300 | endif
@@ -598,6 +601,7 @@ let g:buffet_always_show_tabline = 0
 let g:buffet_powerline_separators = 1
 let g:buffet_show_index = 1
 let g:coc_snippet_next = '<tab>'
+
 
 let g:vista_executive_for = {
 	\ 'go': 'ctags',
