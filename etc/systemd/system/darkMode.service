@@ -1,11 +1,12 @@
 [Unit]
-Description=Dark/Light mode switcher
+Description=Automatic Dark/Light Mode Switcher
 DefaultDependencies=no
-After=network.target
+Before=sddm.service
+After=systemd-user-sessions.service getty@tty1.service plymouth-quit.service systemd-logind.service
 
 [Service]
 Type=simple
-User=user # replace with username
+User=doc
 Group=users
 Environment="PATH=/usr/local/bin:/usr/bin:/bin"
 Environment="DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus"
@@ -15,4 +16,5 @@ ExecStart=/home/doc/.local/bin/darkMode
 # TimeoutStartSec=0
 
 [Install]
-WantedBy=default.target
+# Suspend.target and after are in place to make sure it's run on wakeup
+WantedBy=default.target suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target
