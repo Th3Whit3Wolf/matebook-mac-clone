@@ -511,9 +511,6 @@ augroup END
 """""""""""""""""""""""""""""
 " Mapping
 """""""""""""""""""""""""""""
-" Session management shortcuts (see plugin/sessions.vim)
-nmap <Leader>ss :<C-u>SessionSave<CR>
-nmap <Leader>sl :<C-u>SessionLoad<CR>
 " Terminal go back to normal mode
 tnoremap <Esc> <C-\><C-n>
 tnoremap :q! <C-\><C-n>:q!<CR>
@@ -582,36 +579,137 @@ xnoremap > >gv|
 nnoremap <A-t> :call TermToggle(10)<CR>
 inoremap <A-t> <Esc>:call TermToggle(10)<CR>
 tnoremap <A-t> <C-\><C-n>:call TermToggle(10)<CR>
-
-" Code Runner
-nnoremap <F9>  :call CompileMyCode()<CR>
-nnoremap <F10> :call RunMyCode()<CR>
-
 """""""""""""""""""""""""""""
 " Leader Mappings
 """""""""""""""""""""""""""""
 let mapleader = "\<Space>"
 
-nnoremap <leader>T :call <SID>run_rust_tests()<cr>
-function! s:run_rust_tests()
-	if &modified
-		write
-	end
-	call SmartRun("cargo test --all -- --test-threads=1 && echo DONE 🎉")
-endfunction
+""" Vim Buffet """
+" Switch Buffers
+nmap <leader>1 <Plug>BuffetSwitch(1)
+nmap <leader>2 <Plug>BuffetSwitch(2)
+nmap <leader>3 <Plug>BuffetSwitch(3)
+nmap <leader>4 <Plug>BuffetSwitch(4)
+nmap <leader>5 <Plug>BuffetSwitch(5)
+nmap <leader>6 <Plug>BuffetSwitch(6)
+nmap <leader>7 <Plug>BuffetSwitch(7)
+nmap <leader>8 <Plug>BuffetSwitch(8)
+nmap <leader>9 <Plug>BuffetSwitch(9)
+nmap <leader>0 <Plug>BuffetSwitch(10)
+
+" Code Runner
+nnoremap <leader>cc :call CompileMyCode()<CR>
+nnoremap <leader>cr :call RunMyCode()<CR>
+nnoremap <leader>ct :call RunRustTest()<CR>
+
+""" Conqueror of Code """
+
+" Applying codeAction to the selected region.
+" Example: `<leader>aap` for current paragraph
+xmap <leader>cas  <Plug>(coc-codeaction-selected)
+nmap <leader>cas  <Plug>(coc-codeaction-selected)
+
+" Remap keys for applying codeAction to the current buffer.
+nmap <leader>ca <Plug>(coc-codeaction)
+" Apply AutoFix to problem on the current line.
+nmap <leader>cqf <Plug>(coc-fix-current)
+
+" Symbol renaming.
+nmap <leader>crn <Plug>(coc-rename)
+
+" Formatting selected code.
+xmap <leader>cf  <Plug>(coc-format-selected)
+nmap <leader>cf  <Plug>(coc-format-selected)
+
+" Mappings for CoCList
+" Show all diagnostics.
+nnoremap <silent><nowait> <space>cld  :<C-u>CocList diagnostics<cr>
+" Manage extensions.
+nnoremap <silent><nowait> <leader>cle  :<C-u>CocList extensions<cr>
+" Show commands.
+nnoremap <silent><nowait> <leader>clc  :<C-u>CocList commands<cr>
+" Find symbol of current document.
+nnoremap <silent><nowait> <leader>clo  :<C-u>CocList outline<cr>
+" Search workspace symbols.
+nnoremap <silent><nowait> <leader>cls  :<C-u>CocList -I symbols<cr>
+" Resume latest coc list.
+nnoremap <silent><nowait> <leader>clr  :<C-u>CocListResume<CR>
+" Do default action for next item.
+nnoremap <silent><nowait> <leader>j  :<C-u>CocNext<CR>
+" Do default action for previous item.
+nnoremap <silent><nowait> <leader>k  :<C-u>CocPrev<CR>
+
+"""" Find """"
+nnoremap <silent> <Leader>fh :<C-u>Clap history<CR>
+nnoremap <silent> <Leader>ff :<C-u>Clap files ++finder=rg --ignore --hidden --files<cr>
+nnoremap <silent> <Leader>fa :<C-u>Clap grep2<CR>
+nnoremap <silent> <Leader>fb :<C-u>Clap marks<CR>
+
+" Session management shortcuts (see plugin/sessions.vim)
+nmap <leader>ss :<C-u>SessionSave<CR>
+nmap <leader>sl :<C-u>SessionLoad<CR>
+
+nnoremap <silent> <leader> :<c-u>WhichKey '<Space>'<CR>
+vnoremap <silent> <leader> :<c-u>WhichKeyVisual '<Space>'<CR>
+
+" Define prefix dictionary
+let g:which_key_map =  {
+	\ 'name' : 'Space'            ,
+	\ '1' : 'Switch to Buffer 1'  ,
+	\ '2' : 'Switch to Buffer 2'  ,
+	\ '3' : 'Switch to Buffer 3'  ,
+	\ '4' : 'Switch to Buffer 4'  ,
+	\ '5' : 'Switch to Buffer 5'  ,
+	\ '6' : 'Switch to Buffer 6'  ,
+	\ '7' : 'Switch to Buffer 7'  ,
+	\ '8' : 'Switch to Buffer 8'  ,
+	\ '9' : 'Switch to Buffer 9'  ,
+	\ '0' : 'Switch to Buffer 10' ,
+	\ 'j' : 'Coc Action Next'     , 
+	\ 'k' : 'Coc Action Previous' ,
+	\ }
+
+let g:which_key_map['c'] = {
+	\ 'name' : '+Code'                        ,
+	\ 'a'    : 'Codeaction Current Buffer'    ,
+	\ 'as'   : 'Codeaction Selected Region'   ,
+	\ 'c'    : 'Code Compile'                 ,	
+	\ 'f'    : 'Format Selected Code'         ,
+	\ 'lc'   : 'CocList Commands'             ,
+	\ 'ld'   : 'CocList Diagnostics'          ,
+	\ 'le'   : 'CocList Extensions'           ,
+	\ 'lo'   : 'CocList Outline'              ,
+	\ 'lr'   : 'CocList Resume'               ,
+	\ 'ls'   : 'CocList Symbols'              ,
+	\ 'qf'   : 'Fix Problem on Current Line'  ,
+	\ 'r'    : 'Code Run'                     ,
+	\ 'rn'   : 'Rename Symbols '              ,
+	\ 't'    : 'Code Test'                    ,
+	\ }
+
+let g:which_key_map['f'] = {
+	\ 'name' : '+Find'     ,
+	\ 'a'    : 'Find Word' ,
+	\ 'b'    : 'Bookmarks' ,
+	\ 'f'    : 'Find File' ,
+	\ 'h'    : 'History  ' ,
+	\ }
+
+let g:which_key_map['g'] = {
+	\ 'name' : '+Git'          ,
+	\ 'm'    : 'Git Messenger' ,
+	\ }
+
+let g:which_key_map['s'] = {
+	\ 'name' : '+Session'     ,
+	\ 'l'    : 'Session Load' ,
+	\ 's'    : 'Session Save'  ,
+	\ }
+
 """""""""""""""""""""""""""""
 " Plugin Configs
 """""""""""""""""""""""""""""
-" vim-buffet
-let g:buffet_use_devicons = 1
-let g:buffet_show_index = 1
-let g:buffet_modified_icon = "+"
-let g:buffet_tab_icon = "\uf00a"
-let g:buffet_left_trunc_icon = "\uf0a8"
-let g:buffet_right_trunc_icon = "\uf0a9"
-let g:buffet_always_show_tabline = 0
-let g:buffet_powerline_separators = 1
-let g:buffet_show_index = 1
+
 let g:coc_snippet_next = '<tab>'
 
 let g:vista_executive_for = {
@@ -669,34 +767,15 @@ let g:dashboard_custom_header = [
         \ ]
 let quote = systemlist('pquote')
 let g:dashboard_custom_footer = quote
-nnoremap <silent> <Leader>fh :<C-u>Clap history<CR>
-nnoremap <silent> <Leader>ff :<C-u>Clap files ++finder=rg --ignore --hidden --files<cr>
-nnoremap <silent> <Leader>fa :<C-u>Clap grep2<CR>
-nnoremap <silent> <Leader>fb :<C-u>Clap marks<CR>
 
 let g:dashboard_custom_section={
-	\ 'last_session' :[' Recently used session                SPC sl '],
+	\ 'last_session' :[' Open last session                    SPC sl '],
 	\ 'find_history' :['ﭯ Recently opened files                SPC fh '],
     \ 'find_file'    :[' Find File                            SPC ff '],
     \ 'find_word'    :[' Find word                            SPC fa '],
     \ 'book_marks'   :[' Jump to book marks                   SPC fb '],
 	\ }
 
-function! BOOK_MARKS()
-	Clap marks
-endfunction
-
-function! FIND_FILE()
-	Clap files ++finder=rg --ignore --hidden
-endfunction
-
-function! FIND_HISTORY()
-	Clap history
-endfunction
-
-function! FIND_WORD()
-	Clap grep2
-endfunction
 " filenames like *.xml, *.html, *.xhtml, ...
 " These are the file extensions where this plugin is enabled.
 let g:closetag_filenames = '*.html,*.xhtml,*.phtml'
@@ -730,33 +809,15 @@ let g:closetag_shortcut = '>'
 " Add > at current position without closing the current tag, default is ''
 let g:closetag_close_shortcut = '<leader>>'
 
+let g:markdown_composer_open_browser = 0
 """""""""""""""""""""""""""""
 " Plugin Mappings
 """""""""""""""""""""""""""""
-" vim buffet
-nmap <leader>1 <Plug>BuffetSwitch(1)
-nmap <leader>2 <Plug>BuffetSwitch(2)
-nmap <leader>3 <Plug>BuffetSwitch(3)
-nmap <leader>4 <Plug>BuffetSwitch(4)
-nmap <leader>5 <Plug>BuffetSwitch(5)
-nmap <leader>6 <Plug>BuffetSwitch(6)
-nmap <leader>7 <Plug>BuffetSwitch(7)
-nmap <leader>8 <Plug>BuffetSwitch(8)
-nmap <leader>9 <Plug>BuffetSwitch(9)
-nmap <leader>0 <Plug>BuffetSwitch(10)
-
 nnoremap<C-p> :Clap files<CR>
 """" Conqueror of Completion """"
 
 " Highlight the symbol and its references when holding the cursor.
 autocmd CursorHold * silent call CocActionAsync('highlight')
-
-" Symbol renaming.
-nmap <leader>cr <Plug>(coc-rename)
-
-" Formatting selected code.
-xmap <leader>cf  <Plug>(coc-format-selected)
-nmap <leader>cf  <Plug>(coc-format-selected)
 
 " Use <C-j> and <C-k> to navigate the completion list:
 inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
@@ -785,16 +846,6 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
-" Applying codeAction to the selected region.
-" Example: `<leader>aap` for current paragraph
-xmap <leader>cas  <Plug>(coc-codeaction-selected)
-nmap <leader>cas  <Plug>(coc-codeaction-selected)
-
-" Remap keys for applying codeAction to the current buffer.
-nmap <leader>ca  <Plug>(coc-codeaction)
-" Apply AutoFix to problem on the current line.
-nmap <leader>cqf  <Plug>(coc-fix-current)
-
 " Map function and class text objects
 " NOTE: Requires 'textDocument.documentSymbol' support from the language server.
 xmap if <Plug>(coc-funcobj-i)
@@ -820,74 +871,6 @@ command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 " Add `:OR` command for organize imports of the current buffer.
 command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
 
-" Mappings for CoCList
-" Show all diagnostics.
-nnoremap <silent><nowait> <space>cld  :<C-u>CocList diagnostics<cr>
-" Manage extensions.
-nnoremap <silent><nowait> <leader>cle  :<C-u>CocList extensions<cr>
-" Show commands.
-nnoremap <silent><nowait> <leader>clc  :<C-u>CocList commands<cr>
-" Find symbol of current document.
-nnoremap <silent><nowait> <leader>clo  :<C-u>CocList outline<cr>
-" Search workspace symbols.
-nnoremap <silent><nowait> <leader>cls  :<C-u>CocList -I symbols<cr>
-" Resume latest coc list.
-nnoremap <silent><nowait> <leader>clr  :<C-u>CocListResume<CR>
-" Do default action for next item.
-nnoremap <silent><nowait> <leader>j  :<C-u>CocNext<CR>
-" Do default action for previous item.
-nnoremap <silent><nowait> <leader>k  :<C-u>CocPrev<CR>
 
-nnoremap <silent> <leader> :<c-u>WhichKey '<Space>'<CR>
-vnoremap <silent> <leader> :<c-u>WhichKeyVisual '<Space>'<CR>
 
-" Define prefix dictionary
-let g:which_key_map =  {
-	\ '1' : 'Switch to Buffer 1'  ,
-	\ '2' : 'Switch to Buffer 2'  ,
-	\ '3' : 'Switch to Buffer 3'  ,
-	\ '4' : 'Switch to Buffer 4'  ,
-	\ '5' : 'Switch to Buffer 5'  ,
-	\ '6' : 'Switch to Buffer 6'  ,
-	\ '7' : 'Switch to Buffer 7'  ,
-	\ '8' : 'Switch to Buffer 8'  ,
-	\ '9' : 'Switch to Buffer 9'  ,
-	\ '0' : 'Switch to Buffer 10'  ,
-	\ 'j' : 'Coc Action Next'     , 
-	\ 'k' : 'Coc Action Previous' ,
-	\ 'T' : 'Run Rust Tests'
-	\ }
-
-let g:which_key_map['c'] = {
-	\ 'name' : '+Code' ,
-	\ 'a'    : 'Codeaction Current Buffer'  ,
-	\ 'clc'  : 'CocList Commands'  ,
-	\ 'cld'  : 'CocList Diagnostics'  ,
-	\ 'cle'  : 'CocList Extensions'  ,
-	\ 'clo'  : 'CocList Outline'  ,
-	\ 'clr'  : 'CocList Resume'  ,
-	\ 'cls'  : 'CocList Symbols'  ,
-	\ 'f'    : 'Format Selected Code'  ,
-	\ 'qf'   : 'Fix Problem on Current Line'  ,
-	\ 'r'    : 'Rename Symbols '  ,
-	\ }
-
-let g:which_key_map['f'] = {
-	\ 'name' : '+Find' ,
-	\ 'a' : 'Find Word'  ,
-	\ 'b' : 'Bookmarks'  ,
-	\ 'f' : 'Find File'  ,
-	\ 'h' : 'History  '  ,
-	\ }
-
-let g:which_key_map['g'] = {
-	\ 'name' : '+Git' ,
-	\ 'm' : 'Git Messenger'  ,
-	\ }
-
-let g:which_key_map['s'] = {
-	\ 'name' : '+Session'     ,
-	\ 'sl'   : 'Load Session' ,
-	\ 'ss'   : 'Load Save'    ,
-	\ }
 

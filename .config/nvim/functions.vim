@@ -189,11 +189,22 @@ function CompileMyCode()
 			echo 'Java is not installed!'
 		endif
 	elseif &filetype == 'rust'
-		if executable('cargo')
-			exec "AsyncRun! cargo build --release"
+		if InCargoProject()
+			if executable('cargo') 
+				exec "AsyncRun! cargo build --release"
+			else
+				echo 'Cargo is not installed or this is not a cargo project'
+			endif
 		else
-			echo 'Rust is not installed or this is not a cargo project'
+			if executable('rustc')
+				exec "AsyncRun! rustc % -o %<"
+				exec bufnr('$') . 'bw'
+			else
+				echo 'Rustc is not installed or this is not a cargo project'
+			endif
 		endif
+	else
+		echo "Dunno how to run such a file..."
 	endif
 endfunction
 
@@ -210,15 +221,27 @@ function! RunMyCode()
 			exec bufnr('$') . 'bw'
 		endif
 	elseif &filetype == 'rust'
-		if executable('cargo')
-			exec "AsyncRun! cargo run"
-			exec bufnr('$') . 'bw'
+		if InCargoProject()
+			if executable('cargo') 
+				exec "AsyncRun! cargo run"
+				exec bufnr('$') . 'bw'
+			else
+				echo 'Cargo is not installed or this is not a cargo project'
+			endif
 		else
-			echo 'Rust is not installed or this is not a cargo project'
+			if executable('rustc')
+				exec "AsyncRun! rustc % -o %<; ./%<"
+				exec bufnr('$') . 'bw'
+			else
+				echo 'Rustc is not installed or this is not a cargo project'
+			endif
 		endif
 	elseif &filetype == 'html'
 		let g:bracey_refresh_on_save = 1
 		Bracey
+	elseif &filetype == 'markdown'
+		ComposerOpen
+		ComposerUpdate
 	elseif &filetype == 'java'
 		if executable('javac')
 			exec "AsyncRun! javac %"
@@ -335,6 +358,231 @@ function! RunMyCode()
 		else
 			echo 'Haskell is not installed!'
 		endif
+	elseif &filetype == 'javascript'
+		if executable('node')
+			exec "AsyncRun! node %"
+			exec bufnr('$') . 'bw'
+		else
+			echo 'Node is not installed!'
+		endif
+	elseif &filetype == 'ruby'
+		if InRailsApp()
+			if executable('ruby')
+				exec "AsyncRun! rails runner %"
+				exec bufnr('$') . 'bw'
+			else
+				echo 'Rails is not installed!'
+			endif
+		else
+			if executable('ruby')
+				exec "AsyncRun! ruby %"
+				exec bufnr('$') . 'bw'
+			else
+				echo 'Ruby is not installed!'
+			endif
+		endif
+	else
+		echo "Dunno how to run such a file..."
 	endif
 endfunction
 let g:asyncrun_open = 12
+
+
+function! FixFormatting()
+	%s/\r\(\n\)/\1/eg
+	retab
+	%s/\s\+$//e
+	nohlsearch
+endfunction
+
+function! FormatSmlComments()
+	normal ^
+	s/(\*/ */g
+	normal gv
+	s/ \*)//g
+	normal A *)
+	normal gvo
+	normal r(gvo
+	nohlsearch
+endfunction
+
+function! YankWholeBuffer(to_system_clipboard)
+	if a:to_system_clipboard
+		normal maggVG"*y`a
+	else
+		normal maggyG`a
+	endif
+endfunction
+
+function! MakeMarkdownHeading(level)
+	if a:level == 1
+		normal! yypVr=k
+	elseif a:level == 2
+		normal! yypVr-k
+	endif
+endfunction
+
+function! ToggleRubyBlockSyntax()
+	if match(getline('.'), "do") != -1
+		execute "normal! ^/do\<cr>ciw{ "
+		execute "normal! lxma"
+		execute "normal! jjdd`aJA }"
+	else
+		execute "normal! ^f{sdo"
+		execute "normal! /\|\<cr>nli\<cr>"
+		execute "normal! $xxoend"
+		execute "normal! kk"
+	end
+endfunction
+
+function! RenameFile()
+	let old_name = expand('%')
+	let new_name = input('New file name: ', expand('%'), 'file')
+	if new_name != '' && new_name != old_name
+		exec ':saveas ' . new_name
+		exec ':silent !rm ' . old_name
+		redraw!
+	endif
+endfunction
+
+function! CorrectSpelling()
+	normal ma
+	let word_before_correction = expand("<cword>")
+	let original_setting = &spell
+
+	set spell
+	normal 1z=
+
+	let word_after_correction = expand("<cword>")
+
+	if tolower(word_after_correction) == word_before_correction
+		undo
+	endif
+
+	normal `a
+	let &spell = original_setting
+endfunction
+
+function! InCargoProject(...)
+	if filereadable("Cargo.toml")
+		return 1
+	elseif filereadable("../Cargo.toml")
+		return 1
+	elseif filereadable("../../Cargo.toml")
+		return 1
+	elseif filereadable("../../Cargo.toml")
+		return 1
+	else
+		return 0
+endfunction
+
+function! InRailsApp(...)
+	return filereadable("app/controllers/application_controller.rb")
+endfunction
+
+function! PasteFromSystemClipBoard()
+	let os = system("uname")
+	if os == "Linux"
+		read !xclip -selection clipboard -out
+	else
+		execute "normal! \<esc>o\<esc>\"+]p"
+	end
+endfunction
+
+function! RemoveFancyCharacters()
+	let typo = {}
+	let typo["“"] = '"'
+	let typo["”"] = '"'
+	let typo["‘"] = "'"
+	let typo["’"] = "'"
+	let typo["–"] = '--'
+	let typo["—"] = '---'
+	let typo["…"] = '...'
+	:exe ":%s/".join(keys(typo), '\|').'/\=typo[submatch(0)]/ge'
+endfunction
+
+function! MakeList()
+	s/^/\=(line('.')-line("'<")+1).'. '"'"))
+endfunction
+
+function! SetIndentation(level)
+	let &shiftwidth=a:level
+	let &softtabstop=a:level
+endfunction
+
+function! CloseExtraPane()
+	if &filetype == "gundo"
+		execute ":GundoToggle"
+	else
+		execute ":cclose"
+		execute ":pclose"
+	end
+endfunction
+
+function! s:get_visual_selection()
+	" Why is this not a built-in Vim script function?!
+	let [line_start, column_start] = getpos("'<")[1:2]
+	let [line_end, column_end] = getpos("'>")[1:2]
+	let lines = getline(line_start, line_end)
+	if len(lines) == 0
+		return ''
+	endif
+	let lines[-1] = lines[-1][: column_end - (&selection == 'inclusive' ? 1 : 2)]
+	let lines[0] = lines[0][column_start - 1:]
+	return join(lines, "\n")
+endfunction
+
+function! CtrlPCurrentDir()
+	let pwd = getcwd()
+	execute "Clap files " . pwd
+endfunction
+
+function! GetVisualSelection()
+	let [lnum1, col1] = getpos("'<")[1:2]
+	let [lnum2, col2] = getpos("'>")[1:2]
+	let lines = getline(lnum1, lnum2)
+	let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
+	let lines[0] = lines[0][col1 - 1:]
+	return join(lines, "\n")
+endfunction
+
+function! SearchForSelectedWord()
+	let word = GetVisualSelection()
+	tabedit
+	execute "Rg " . word
+endfunction
+
+function! RunRustTest()
+	if &modified
+		write
+	end
+	if executable('cargo')
+		exec "AsyncRun! cargo test --all -- --test-threads=1 && echo DONE "
+		exec bufnr('$') . 'bw'
+	else
+		echo 'Rust is not installed or this is not a cargo project'
+	endif
+endfunction
+
+"""""""""""""""""""""""""""""
+" Dashboard Nvim
+"""""""""""""""""""""""""""""
+function! BOOK_MARKS()
+	Clap marks
+endfunction
+
+function! FIND_FILE()
+	Clap files ++finder=rg --ignore --hidden
+endfunction
+
+function! FIND_HISTORY()
+	Clap history
+endfunction
+
+function! FIND_WORD()
+	Clap grep2
+endfunction
+
+function! LAST_SESSION()
+	SessionLoad
+endfunction
