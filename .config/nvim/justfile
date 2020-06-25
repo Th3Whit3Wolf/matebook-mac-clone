@@ -161,9 +161,10 @@ pack:
 	pack install mhinz/vim-signify
 	pack install mhinz/vim-crates -o
 	pack install liuchengxu/vista.vim
-	pack install junegunn/rainbow_parentheses.vim
+	pack install luochen1990/rainbow
 	pack install Th3Whit3Wolf/vim-shebang
 	pack install ludovicchabant/vim-gutentags --for {{tags}}
 	pack install hardcoreplayers/dashboard-nvim
 	pack install liuchengxu/vim-which-key -o
 	pack install rhysd/git-messenger.vim
+	pack install nathanaelkane/vim-indent-guides

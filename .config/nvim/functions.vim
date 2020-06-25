@@ -414,6 +414,11 @@ function! YankWholeBuffer(to_system_clipboard)
 	endif
 endfunction
 
+function! PasteMarkdownLink()
+	let link = system("markdown_link " . s:get_visual_selection())
+	execute "normal! gvs" . link
+endfunction
+
 function! MakeMarkdownHeading(level)
 	if a:level == 1
 		normal! yypVr=k
@@ -563,6 +568,25 @@ function! RunRustTest()
 		echo 'Rust is not installed or this is not a cargo project'
 	endif
 endfunction
+
+function! FormatSql()
+	let path = expand('%:p')
+	write
+	execute "silent !format-sql \"" . path . "\""
+	edit
+endfunction
+
+"function! RunSqlQuery()
+"	let path = expand('%:p')
+"	write
+"	new
+"	setlocal buftype=nofile
+"	setlocal bufhidden=hide
+"	setlocal noswapfile
+"	setlocal nowrap
+"	execute "read !psql " . $TONSSER_PRODUCTION_DATABASE . " -f " . path
+"	call FixFormatting()
+"endfunction
 
 """""""""""""""""""""""""""""
 " Dashboard Nvim

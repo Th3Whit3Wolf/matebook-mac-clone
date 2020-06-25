@@ -285,7 +285,6 @@ let g:coc_global_extensions = [
 	\ 'coc-marketplace',
 	\ 'coc-diagnostic',
 	\ 'coc-git',
-	\ 'coc-pairs',
 	\ 'coc-snippets',
 	\ 'coc-yank',
 	\ 'coc-highlight',
@@ -503,11 +502,6 @@ augroup cocNvim
 	" Remove unused coc extension
 	autocmd User CocNvimInit call UninstallUnusedCocExtensions()
 augroup end
-
-augroup rainbow_lisp
-	autocmd!
-	autocmd FileType * RainbowParentheses 
-augroup END
 """""""""""""""""""""""""""""
 " Mapping
 """""""""""""""""""""""""""""
@@ -570,10 +564,25 @@ xnoremap < <gv
 xnoremap > >gv|
 
 " Use tab for indenting
-"vnoremap <Tab> >gv|
-"vnoremap <S-Tab> <gv
-"nmap <Tab>   >>_
-"nmap <S-Tab> <<_
+vnoremap <Tab> >gv|
+vnoremap <S-Tab> <gv
+nmap <Tab>   >>_
+nmap <S-Tab> <<_
+
+" Exit insert mode and save just by hitting CTRL-s
+imap <c-s> <esc>:w<cr>
+nmap <c-s> <esc>:w<cr>
+
+" Make terminal mode behave more like any other mode
+tnoremap <C-[> <C-\><C-n>
+tnoremap <C-h> <C-\><C-n><C-w>h
+tnoremap <C-j> <C-\><C-n><C-w>j
+tnoremap <C-k> <C-\><C-n><C-w>k
+tnoremap <C-l> <C-\><C-n><C-w>l
+tnoremap <A-k> <C-\><C-n><C-W>+i
+tnoremap <A-j> <C-\><C-n><C-W>-i
+tnoremap <A-h> <C-\><C-n>3<C-W>>i
+tnoremap <A-l> <C-\><C-n>3<C-W><i
 
 " Toggle terminal on/off (neovim)
 nnoremap <A-t> :call TermToggle(10)<CR>
@@ -649,6 +658,26 @@ nnoremap <silent> <Leader>fb :<C-u>Clap marks<CR>
 nmap <leader>ss :<C-u>SessionSave<CR>
 nmap <leader>sl :<C-u>SessionLoad<CR>
 
+"" Taken from David Pederson
+nnoremap <leader>i :call IndentEntireFile()<cr>
+nnoremap <leader>j :call GotoDefinitionInSplit(0)<cr>
+nnoremap <leader>J :call GotoDefinitionInSplit(1)<cr>
+nnoremap <leader>w :Windows<cr>
+nnoremap <leader>W :wq<cr>
+nnoremap <leader>a :call YankWholeBuffer(0)<cr>
+nnoremap <leader>ag viw:call SearchForSelectedWord()<cr>
+nnoremap <leader>b :Clap buffers<cr>
+nnoremap <leader>cm :!chmod +x %<cr>
+nnoremap <leader>ll :Clap bLines<cr>
+nnoremap <leader>mH :call MakeMarkdownHeading(2)<cr>
+nnoremap <leader>md :set filetype=markdown<cr>
+nnoremap <leader>mh :call MakeMarkdownHeading(1)<cr>
+nnoremap <leader>ns :set spell!<cr>
+nnoremap <leader>p :call PasteFromSystemClipBoard()<cr>
+nnoremap <leader>rn :call RenameFile()<cr>
+nnoremap <leader>z :call CorrectSpelling()<cr>
+" vnoremap <leader>ml :call PasteMarkdownLink()<cr>
+
 nnoremap <silent> <leader> :<c-u>WhichKey '<Space>'<CR>
 vnoremap <silent> <leader> :<c-u>WhichKeyVisual '<Space>'<CR>
 
@@ -709,7 +738,8 @@ let g:which_key_map['s'] = {
 """""""""""""""""""""""""""""
 " Plugin Configs
 """""""""""""""""""""""""""""
-
+let g:rainbow_active = 1
+let g:indent_guides_enable_on_vim_startup = 1
 let g:coc_snippet_next = '<tab>'
 
 let g:vista_executive_for = {
@@ -857,7 +887,7 @@ omap ic <Plug>(coc-classobj-i)
 xmap ac <Plug>(coc-classobj-a)
 omap ac <Plug>(coc-classobj-a)
 
-" Use CTRL-S for selections ranges.
+" Use CTRL-d for selections ranges.
 " Requires 'textDocument/selectionRange' support of LS, ex: coc-tsserver
 nmap <silent> <C-d> <Plug>(coc-range-select)
 xmap <silent> <C-d> <Plug>(coc-range-select)

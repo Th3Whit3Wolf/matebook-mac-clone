@@ -13,10 +13,10 @@ let s:autocmd_allowed = 0
 function! ToggleBackground()
 	if &background == "light"
 		set background=dark
-		g:BuffetSetCustomColors()
+		set tabline=%!buffet#render()
 	else
 		set background=light
-		g:BuffetSetCustomColors()
+		set tabline=%!buffet#render()
 	endif
 endfunction
 
