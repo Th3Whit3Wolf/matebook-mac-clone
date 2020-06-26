@@ -37,7 +37,7 @@ if [[ ! "$currenttime" < "$night" ]] || [[ "$currenttime" < "$morning" ]]; then
     # Change background wallpaper for login screen
     sed -i 's/background=10-15-Day.jpg/background=10-15-Night.jpg/' /usr/share/sddm/themes/McMojave/theme.conf.user
     # Change default konsole profile
-    sed -i 's/DefaultProfile=Light.profile/DefaultProfile=Dark.profile/' /home/.doc/.config/konsolerc
+    sed -i 's/DefaultProfile=Light.profile/DefaultProfile=Dark.profile/' /home/doc/.config/konsolerc
     # Change theme off all konsole sessions
     changeKonsole Dark
     # Change bat theme
@@ -65,10 +65,15 @@ else
     # Change background Wallpaper for login screen
     sed -i 's/background=10-15-Night.jpg/background=10-15-Day.jpg/' /usr/share/sddm/themes/McMojave/theme.conf.user
     # Change default konsole profile
-    sed -i 's/DefaultProfile=Dark.profile/DefaultProfile=Light.profile/' /home/.doc/.config/konsolerc
+    sed -i 's/DefaultProfile=Dark.profile/DefaultProfile=Light.profile/' /home/doc/.config/konsolerc
     # Change theme off all konsole sessions
     changeKonsole Light
     # Change bat theme
     echo "--theme=OneHalfLight" > /home/doc/.config/bat/config
     echo "Light Mode On"
 fi
+
+# Change Task Switcher
+kwriteconfig5 --file ~/.config/kwinrc --group TabBox --key LayoutName thumbnails
+qdbus org.kde.KWin /KWin reconfigure
+
