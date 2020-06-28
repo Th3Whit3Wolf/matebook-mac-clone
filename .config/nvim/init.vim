@@ -2,6 +2,8 @@ if &compatible
 	set nocompatible
 endif
 
+let mapleader = "\<Space>"
+
 " Set main configuration directory, and where cache is stored.
 let $VIMPATH = fnamemodify(resolve(expand('<sfile>:p')), ':h:h')
 " Set data/cache directory as $XDG_CACHE_HOME/vim
@@ -340,23 +342,85 @@ endif
 """""""""""""""""""""""""""""
 " Auto Commands
 """""""""""""""""""""""""""""
+function! s:do_cmd(cmd, bang, start, end, args)
+    exec printf('%s%s%s %s', (a:start == a:end ? '' : (a:start.','.a:end)), a:cmd, a:bang, a:args)
+endfunction
 " Return to last edit position when opening files (You want this!)
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-" Close vista if it is the only open window
-autocmd BufEnter * if winnr("$") == 1 && vista#sidebar#IsOpen() | execute "normal! :q!\<CR>" | endif
 " Automatically check for new crate versions when opening Cargo.toml
 autocmd BufRead,BufNewFile Cargo.toml packadd vim-crates | call crates#toggle()
 " Trim whitespace before saving
 autocmd BufWritePre * :call TrimWhitespace()
-
+" Reload vim config automatically
+autocmd BufWritePost $VIM_PATH/{*.vim,*.json} nested
+	\ source $MYVIMRC | redraw
 " Autoload packages
 augroup Pack
+	" alvan/vim-closetag
+	autocmd FileType html,xhtml,xml,phtml,jsx packadd vim-closetag
+	" arzg/vim-rust-syntax-ext
+	autocmd FileType rust packadd vim-rust-syntax-ext
+	" euclio/vim-markdown-composer
+	autocmd FileType markdown packadd vim-markdown-composer
+	" ludovicchabant/vim-gutentags
+	autocmd FileType taggers packadd vim-gutentags
+	" rust-lang/rust.vim
+	autocmd FileType rust packadd rust.vim
+	" tpope/vim-endwise
+	autocmd FileType c,cpp,xdefaaults,haskell,objc,make,verilog,matlab,htmldjango,vim,vb,vbnet,aspvbs,sh,zsh,ruby,elixir,lua,crystal,htmljinja,jina.html,snippets packadd vim-endwise
+	" turbio/bracey.vim
+	autocmd FileType html,css,javascript packadd bracey.vim
 	" Vim Which Key
 	command! -nargs=* -range -bang WhichKey packadd vim-which-key | call which_key#register('<Space>', 'g:which_key_map')
 	command! -nargs=* -range -bang WhichKeyVisual packadd vim-which-key | call which_key#register('<Space>', 'g:which_key_map')
 	" Vim Crates
 	autocmd BufRead,BufNewFile Cargo.toml packadd vim-crates | call crates#toggle()
+	" Vim Snippets 
+	autocmd InsertEnter * packadd vim-snippets
+	" Rainbow Parentheses
+	autocmd InsertEnter * packadd rainbow_parentheses.vim | RainbowParentheses
+    autocmd InsertLeave * RainbowParentheses!
+	" Git Messenger
+	command! -nargs=* -range -bang GitMessenger packadd git-messenger.vim | call s:do_cmd('GitMessenger', "<bang>", <line1>, <line2>, <q-args>)
+	" Eunuch Vim
+	command! -nargs=* -range -bang Delete    packadd vim-eunuch | call s:do_cmd('Delete'   , "<bang>", <line1>, <line2>, <q-args>)
+	command! -nargs=* -range -bang Unlink    packadd vim-eunuch | call s:do_cmd('Unlink'   , "<bang>", <line1>, <line2>, <q-args>)
+	command! -nargs=* -range -bang Move      packadd vim-eunuch | call s:do_cmd('Move'     , "<bang>", <line1>, <line2>, <q-args>)
+	command! -nargs=* -range -bang Rename    packadd vim-eunuch | call s:do_cmd('Rename'   , "<bang>", <line1>, <line2>, <q-args>)
+	command! -nargs=* -range -bang Chmod     packadd vim-eunuch | call s:do_cmd('Chmod'    , "<bang>", <line1>, <line2>, <q-args>)
+	command! -nargs=* -range -bang Mkdir     packadd vim-eunuch | call s:do_cmd('Mkdir'    , "<bang>", <line1>, <line2>, <q-args>)
+	command! -nargs=* -range -bang Cfind     packadd vim-eunuch | call s:do_cmd('Cfind'    , "<bang>", <line1>, <line2>, <q-args>)
+	command! -nargs=* -range -bang Clocate   packadd vim-eunuch | call s:do_cmd('Clocate'  , "<bang>", <line1>, <line2>, <q-args>)
+	command! -nargs=* -range -bang Lfind     packadd vim-eunuch | call s:do_cmd('Lfind'    , "<bang>", <line1>, <line2>, <q-args>)
+	command! -nargs=* -range -bang Llocate   packadd vim-eunuch | call s:do_cmd('Llocate'  , "<bang>", <line1>, <line2>, <q-args>)
+	command! -nargs=* -range -bang Wall      packadd vim-eunuch | call s:do_cmd('Wall'     , "<bang>", <line1>, <line2>, <q-args>)
+	command! -nargs=* -range -bang SudoWrite packadd vim-eunuch | call s:do_cmd('SudoWrite', "<bang>", <line1>, <line2>, <q-args>)
+	command! -nargs=* -range -bang SudoEdit  packadd vim-eunuch | call s:do_cmd('SudoEdit' , "<bang>", <line1>, <line2>, <q-args>)
+	" Async Run
+	command! -nargs=* -range -bang AsyncRun  packadd asyncrun.vim | let g:asyncrun_last = 1 | call s:do_cmd('AsyncRun'  , "<bang>", <line1>, <line2>, <q-args>)
+	command! -nargs=* -range -bang AsyncStop packadd asyncrun.vim | let g:asyncrun_last = 1 | call s:do_cmd('AsyncStop' , "<bang>", <line1>, <line2>, <q-args>)
+
 augroup END
+if mapcheck("<leader>tv") == ""
+    noremap  <silent> <leader>tv :if !exists('vista#sidebar#Toggle()') <bar> :packadd vista.vim <bar>: call VistaAutoClose() <bar> :endif <bar> :Vista!!<CR>
+
+	" Close vista if it is the only open window
+	function! VistaAutoClose()
+		autocmd BufEnter * if winnr("$") == 1 && vista#sidebar#IsOpen() | execute "normal! :q!\<CR>" | endif
+		let g:which_key_map.t.v = 'Toggle Vista'
+	endfunction
+endif
+
+if mapcheck("<leader>gm") == ""
+
+    nmap  <silent> <leader>gm :if !exists('g:git_messenger_git_command') <bar> :packadd git-messenger.vim <bar>: call VimWhichGM() <bar> :endif <bar><CR> <Plug>(git-messenger)
+
+	function! VimWhichGM()
+        let g:git_messenger_no_default_mappings = v:true
+		let g:which_key_map.g.m = 'Git Messenger'
+		" nmap <leader>gm <Plug>(git-messenger)
+	endfunction
+endif
 
 augroup MyAutoCmd
 	autocmd!
@@ -473,7 +537,6 @@ augroup miscGroup
 	autocmd BufNewFile,BufRead Tmuxfile,tmux/config     setfiletype tmux
 	autocmd BufNewFile,BufRead Brewfile                 setfiletype ruby
 	autocmd BufNewFile,BufRead Justfile,justfile        setfiletype make
-	autocmd BufNewFile,BufRead *.ion                    setfiletype ion
 	autocmd FileType pow set commentstring={{\ %s\ }}
 	autocmd BufWinEnter,WinEnter term://* startinsert
 	autocmd BufLeave term://* stopinsert
@@ -591,8 +654,6 @@ tnoremap <A-t> <C-\><C-n>:call TermToggle(10)<CR>
 """""""""""""""""""""""""""""
 " Leader Mappings
 """""""""""""""""""""""""""""
-let mapleader = "\<Space>"
-
 """ Vim Buffet """
 " Switch Buffers
 nmap <leader>1 <Plug>BuffetSwitch(1)
@@ -607,9 +668,9 @@ nmap <leader>9 <Plug>BuffetSwitch(9)
 nmap <leader>0 <Plug>BuffetSwitch(10)
 
 " Code Runner
-nnoremap <leader>cc :call CompileMyCode()<CR>
-nnoremap <leader>cr :call RunMyCode()<CR>
-nnoremap <leader>ct :call RunRustTest()<CR>
+nnoremap <leader>cc :packadd asyncrun.vim <bar> let g:asyncrun_last = 1 <bar> call CompileMyCode()<CR>
+nnoremap <leader>cr :packadd asyncrun.vim <bar> let g:asyncrun_last = 1 <bar> call RunMyCode()<CR>
+nnoremap <leader>ctt :packadd asyncrun.vim <bar> let g:asyncrun_last = 1 <bar> call RunRustTest()<CR>
 
 """ Conqueror of Code """
 
@@ -658,6 +719,11 @@ nnoremap <silent> <Leader>fb :<C-u>Clap marks<CR>
 nmap <leader>ss :<C-u>SessionSave<CR>
 nmap <leader>sl :<C-u>SessionLoad<CR>
 
+" Toggle
+nnoremap <leader>tf :CocCommand explorer<CR>
+nnoremap <leader>tt :call TermToggle(20)<CR>
+"nnoremap <leader>tv :Vista!!<CR>
+
 "" Taken from David Pederson
 nnoremap <leader>i :call IndentEntireFile()<cr>
 nnoremap <leader>j :call GotoDefinitionInSplit(0)<cr>
@@ -676,7 +742,7 @@ nnoremap <leader>ns :set spell!<cr>
 nnoremap <leader>p :call PasteFromSystemClipBoard()<cr>
 nnoremap <leader>rn :call RenameFile()<cr>
 nnoremap <leader>z :call CorrectSpelling()<cr>
-" vnoremap <leader>ml :call PasteMarkdownLink()<cr>
+vnoremap <leader>ml :call PasteMarkdownLink()<cr>
 
 nnoremap <silent> <leader> :<c-u>WhichKey '<Space>'<CR>
 vnoremap <silent> <leader> :<c-u>WhichKeyVisual '<Space>'<CR>
@@ -725,21 +791,27 @@ let g:which_key_map['f'] = {
 	\ }
 
 let g:which_key_map['g'] = {
-	\ 'name' : '+Git'          ,
-	\ 'm'    : 'Git Messenger' ,
+	\ 'name' : '+Git'          ,  
 	\ }
 
 let g:which_key_map['s'] = {
 	\ 'name' : '+Session'     ,
 	\ 'l'    : 'Session Load' ,
-	\ 's'    : 'Session Save'  ,
+	\ 's'    : 'Session Save' ,
 	\ }
+
+let g:which_key_map['t'] = {
+	\ 'name' : '+Toggle'          ,
+	\ 'f'    : 'Toggle File Tree' ,
+	\ 't'    : 'Toggle Terminal'  ,
+	\ }
+	" \ 'v'    : 'Toggle Vista'     ,
+	" \ }
 
 """""""""""""""""""""""""""""
 " Plugin Configs
 """""""""""""""""""""""""""""
-let g:rainbow_active = 1
-let g:indent_guides_enable_on_vim_startup = 1
+"let g:rainbow_active = 1
 let g:coc_snippet_next = '<tab>'
 
 let g:vista_executive_for = {
@@ -772,8 +844,10 @@ let g:vista#renderer#icons = {
 \   "variable": "\uf71b",
 \  }
 
-let g:rainbow#max_level = 16
-let g:rainbow#pairs = [['(', ')'], ['[', ']']]
+
+
+" let g:rainbow#max_level = 16
+" let g:rainbow#pairs = [['(', ')'], ['[', ']']]
 let g:dashboard_custom_header = [
         \ '',
         \ '                    ''c.',
@@ -840,6 +914,11 @@ let g:closetag_shortcut = '>'
 let g:closetag_close_shortcut = '<leader>>'
 
 let g:markdown_composer_open_browser = 0
+
+let g:signify_sign_add                   = ''
+    let g:signify_sign_delete            = ''
+    let g:signify_sign_delete_first_line = ''
+    let g:signify_sign_change            = ''
 """""""""""""""""""""""""""""
 " Plugin Mappings
 """""""""""""""""""""""""""""
@@ -900,7 +979,3 @@ command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 
 " Add `:OR` command for organize imports of the current buffer.
 command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
-
-
-
-

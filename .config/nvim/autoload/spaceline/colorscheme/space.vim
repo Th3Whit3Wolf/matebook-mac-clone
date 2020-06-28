@@ -4,25 +4,25 @@
 " URL: https://github.com/taigacute/spaceline.vim
 " License: MIT License
 " =============================================================================
-let s:slc={}
-let s:slc.yellow = ['fabd2f', 214]
-let s:slc.navy = ['242B38', 237]
-let s:slc.lightgray= ['c0c0c0', 188]
-let s:slc.purple = ['5d4d7a', 261]
-let s:slc.orange  = ['FF8800', 208]
-let s:slc.red = ['ec5f67', 203]
-let s:slc.blue = ['0087d7', 32]
-let s:slc.lightblue = ['6272a4', 225]
-let s:slc.teal = ['008080', 6]
-let s:slc.green = ['afd700', 148]
-let s:slc.gray = ['3c3836', 237]
-let s:slc.darknavy=[]
-
-call spaceline#colors#match_background_color(s:slc.darknavy)
-
 function! spaceline#colorscheme#space#space()
+  let s:slc={}
+  let s:slc.yellow = ['fabd2f', 214]
+  let s:slc.navy = ['242B38', 237]
+  let s:slc.lightgray= ['c0c0c0', 188]
+  let s:slc.purple = ['5d4d7a', 261]
+  let s:slc.orange  = ['FF8800', 208]
+  let s:slc.red = ['ec5f67', 203]
+  let s:slc.blue = ['0087d7', 32]
+  let s:slc.lightblue = ['6272a4', 225]
+  let s:slc.teal = ['008080', 6]
+  let s:slc.green = ['afd700', 148]
+  let s:slc.gray = ['3c3836', 237]
+  let s:slc.darknavy=[]
+
+  call spaceline#colors#match_background_color(s:slc.darknavy)
+
   let l:mode=mode()
-  if get(g:,'spaceline_seperate_style', 'arrow') == 'slant'
+  if g:seperate_style  == 'slant'
       call spaceline#colors#spaceline_hl('HomeMode', s:slc, 'teal', 'yellow')
       call spaceline#colors#spaceline_hl('HomeModeRight',s:slc,  'yellow', 'purple')
       call spaceline#colors#spaceline_hl('FileNameRight',s:slc, 'navy','purple')
@@ -31,7 +31,7 @@ function! spaceline#colorscheme#space#space()
       call spaceline#colors#spaceline_hl('GitRight',s:slc,  'purple',  'darknavy')
       call spaceline#colors#spaceline_hl('InActiveHomeRight', s:slc, 'yellow', 'navy')
       call spaceline#colors#spaceline_hl('ShortRight', s:slc, 'yellow', 'navy')
-  elseif get(g:,'spaceline_seperate_style','arrow') == 'slant-cons'
+  elseif g:seperate_style  == 'slant-cons'
     if l:mode==#"n"
       call spaceline#colors#spaceline_hl('HomeMode', s:slc, 'teal', 'yellow')
       call spaceline#colors#spaceline_hl('HomeModeRight',s:slc,  'yellow', 'purple')
@@ -46,7 +46,7 @@ function! spaceline#colorscheme#space#space()
     call spaceline#colors#spaceline_hl('GitRight',s:slc,  'purple',  'darknavy')
     call spaceline#colors#spaceline_hl('InActiveHomeRight', s:slc, 'yellow', 'navy')
     call spaceline#colors#spaceline_hl('ShortRight', s:slc, 'yellow', 'navy')
-  elseif get(g:,'spaceline_seperate_style','arrow') == 'slant-fade'
+  elseif g:seperate_style  == 'slant-fade'
     call spaceline#colors#spaceline_hl('HomeMode', s:slc, 'teal', 'yellow')
     call spaceline#colors#spaceline_hl('HomeModeRight',s:slc,  'yellow', 'purple')
     call spaceline#colors#spaceline_hl('FileNameRight',s:slc, 'navy','purple')
@@ -55,7 +55,7 @@ function! spaceline#colorscheme#space#space()
     call spaceline#colors#spaceline_hl('GitRight',s:slc,  'purple','darknavy')
     call spaceline#colors#spaceline_hl('InActiveHomeRight', s:slc, 'yellow', 'navy')
     call spaceline#colors#spaceline_hl('ShortRight', s:slc, 'yellow', 'navy')
-  elseif get(g:,'spaceline_seperate_style', 'arrow') == 'arrow-fade'
+  elseif g:seperate_style  == 'arrow-fade'
     call spaceline#colors#spaceline_hl('HomeMode', s:slc, 'teal', 'yellow')
     call spaceline#colors#spaceline_hl('HomeModeRight',s:slc,  'yellow', 'purple')
     call spaceline#colors#spaceline_hl('FileNameRight',s:slc, 'purple','navy')
@@ -64,7 +64,7 @@ function! spaceline#colorscheme#space#space()
     call spaceline#colors#spaceline_hl('GitRight',s:slc,  'purple',  'darknavy')
     call spaceline#colors#spaceline_hl('InActiveHomeRight', s:slc, 'yellow', 'navy')
     call spaceline#colors#spaceline_hl('ShortRight', s:slc, 'yellow', 'navy')
-  elseif get(g:,'spaceline_seperate_style', 'arrow') == 'curve'
+  elseif g:seperate_style  == 'curve'
     call spaceline#colors#spaceline_hl('HomeMode', s:slc, 'teal', 'yellow')
     call spaceline#colors#spaceline_hl('HomeModeRight',s:slc,  'purple', 'yellow')
     call spaceline#colors#spaceline_hl('FileNameRight',s:slc, 'purple','navy')
@@ -96,10 +96,10 @@ function! spaceline#colorscheme#space#space()
   call spaceline#colors#spaceline_hl('GitModified',s:slc,  'orange',  'purple')
   call spaceline#colors#spaceline_hl('CocBar',s:slc,  'teal',  'darknavy')
   call spaceline#colors#spaceline_hl('LineInfoLeft',s:slc,  'purple',  'darknavy')
-  if get(g:,'spaceline_seperate_style', 'arrow') == 'arrow-fade' || get(g:,'spaceline_seperate_style','arrow') == 'slant-cons'
-      call spaceline#colors#spaceline_hl('LineFormatRight',s:slc,  'navy',  'purple')
+  if g:seperate_style  ==? 'slant' || g:seperate_style ==? 'arrow' || g:seperate_style ==? 'curve'
+    call spaceline#colors#spaceline_hl('LineFormatRight',s:slc,  'purple',  'navy')
   else
-      call spaceline#colors#spaceline_hl('LineFormatRight',s:slc,  'purple',  'navy')
+    call spaceline#colors#spaceline_hl('LineFormatRight',s:slc,  'navy',  'purple')
   endif
   call spaceline#colors#spaceline_hl('StatusEncod',s:slc,  'lightgray',  'purple')
   call spaceline#colors#spaceline_hl('StatusFileFormat',s:slc,  'lightgray',  'purple')

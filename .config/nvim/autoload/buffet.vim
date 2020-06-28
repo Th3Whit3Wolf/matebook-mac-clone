@@ -50,7 +50,7 @@ function! buffet#update()
 
         " hide terminal and quickfix buffers
         let buffer_type = getbufvar(buffer_id, "&buftype", "")
-        if index(["terminal", "quickfix"], buffer_type) >= 0
+        if index(g:buffet_hidden_buffers, buffer_type) >= 0
             call setbufvar(buffer_id, "&buflisted", 0)
             continue
         endif
@@ -63,7 +63,7 @@ function! buffet#update()
         let buffer = {}
         let buffer.head = split(buffer_head, s:path_separator)
         let buffer.not_new = len(buffer_tail)
-        let buffer.tail = buffer.not_new ? buffer_tail : g:buffet_new_buffer_name
+        let buffer.tail = buffer.not_new ? buffer_tail : g:buffet_new_buffer_name 
 
         " Update the buffers map
         let s:buffers[buffer_id] = buffer
@@ -119,7 +119,7 @@ function! buffet#update()
     endif
 
     " Hide tabline if only one buffer and tab open
-    if !g:buffet_always_show_tabline && len(s:buffer_ids) == 1 && tabpagenr("$") == 1
+    if len(s:buffer_ids) == 1 && tabpagenr("$") == 1
         set showtabline=0
     endif
 endfunction
@@ -282,25 +282,15 @@ function! s:Render()
 
         if elem.type == "Tab"
             let render = render . "%" . elem.value . "T"
-        elseif s:IsBufferElement(elem) && has("nvim")
+        elseif s:IsBufferElement(elem)
             let render = render . "%" . elem.buffer_id . "@SwitchToBuffer@"
         endif
 
         let highlight = s:GetTypeHighlight(elem.type)
         let render = render . highlight
 
-        if g:buffet_show_index && s:IsBufferElement(elem)
-            let render = render . " " . index_number[elem.index-1]
-        endif
-
-        if elem.type != "Tab"
-            let render = render . " " . elem.value
-        endif
-
         if s:IsBufferElement(elem)
-            if elem.is_modified && g:buffet_modified_icon != ""
-                let render = render . g:buffet_modified_icon
-            endif
+            let render = render . " " . index_number[elem.index-1]
         endif
 
         let icon = ""
@@ -312,22 +302,28 @@ function! s:Render()
 
         let render = render . icon
 
+        if elem.type != "Tab"
+            let render = render . " " . elem.value
+        endif
+
+        if s:IsBufferElement(elem)
+            if elem.is_modified && g:buffet_modified_icon != ""
+                let render = render . g:buffet_modified_icon
+            endif
+        endif
+
         let render = render . " "
 
         let separator =  g:buffet_has_separator[left.type][right.type]
         let separator_hi = s:GetTypeHighlight(left.type . right.type)
         let render = render . separator_hi . separator
 
-        if elem.type == "Tab" && has("nvim")
+        if elem.type == "Tab"
             let render = render . "%T"
-        elseif s:IsBufferElement(elem) && has("nvim")
+        elseif s:IsBufferElement(elem)
             let render = render . "%T"
         endif
     endfor
-
-    if !has("nvim")
-        let render = render . "%T"
-    endif
 
     let render = render . s:GetTypeHighlight("Buffer")
 

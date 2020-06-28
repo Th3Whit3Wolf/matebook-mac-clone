@@ -1,10 +1,8 @@
-v := "v0.2.5"
+v := "0.2.5"
 os := "x86_64-unknown-linux-gnu"
-vim_endwise := "c,cpp,xdefaaults,haskell,objc,make,verilog,matlab,htmldjango,vim,vb,vbnet,aspvbs,sh,zsh,ruby,elixir,lua,crystal,htmljinja,jina.html,snippets"
-tags := `echo$(ctags --list-languages) | sed 's/ /,/g'`
 
 # Install Super Sayain Vim
-install: initialize venv _init_pack
+install: _initialize _venv _web _pack
 	#!/bin/bash
 	if ! hash cargo 2>/dev/null; then
 		echo "Rust installation not found."
@@ -17,7 +15,7 @@ install: initialize venv _init_pack
 	fi
 	echo "Super Saiyan Vim Installed Sucessfully"
 
-initialize: 
+_initialize: 
 	mkdir -vp {{env_var_or_default('XDG_CACHE_HOME', '$HOME/.cache')}}/vim/backup
 	mkdir -vp {{env_var_or_default('XDG_CACHE_HOME', '$HOME/.cache')}}/vim/session
 	mkdir -vp {{env_var_or_default('XDG_CACHE_HOME', '$HOME/.cache')}}/vim/swap
@@ -27,15 +25,32 @@ initialize:
 	mkdir -vp {{env_var_or_default('XDG_CACHE_HOME', '$HOME/.cache')}}/vim/lsp
 
 _init_pack:
-	#!/usr/bin/bash	
-	wget https://github.com/maralla/pack/releases/download/{{v}}/pack-{{v}}-{{os}}.tar.gz
-	tar -vxf pack-{{v}}-{{os}}.tar.gz
-	echo "export VIM_CONFIG_PATH=$HOME/.cache/vim" >> ~/.zprofile
-	echo "export VIM_CONFIG_PATH=$HOME/.cache/vim" >> ~/.profile
+	#!/usr/bin/bash
+	if ! hash pack 2>/dev/null; then
+		wget https://github.com/maralla/pack/releases/download/v{{v}}/pack-v{{v}}-{{os}}.tar.gz
+		tar -vxf pack-v{{v}}-{{os}}.tar.gz
+		sudo mv pack /usr/bin/
+		sudo rm -dR contrib
+		rm LICENSE
+		rm pack-v{{v}}-{{os}}.tar.gz
+		rm README.md
+		echo "export VIM_CONFIG_PATH=$HOME/.cache/vim" >> ~/.zprofile
+		echo "export VIM_CONFIG_PATH=$HOME/.cache/vim" >> ~/.profile
+		VIM_CONFIG_PATH=$HOME/.cache/vim
+	elif [[ "$(pack -V | cut -d ' ' -f2 | cut -d '.' -f3)" < "$(echo {{v}} | cut -d '.' -f3)" ]] || [[ "$(pack -V | cut -d ' ' -f2 | cut -d '.' -f2)" < "$(echo {{v}} | cut -d '.' -f2)" ]] || [[ "$(pack -V | cut -d ' ' -f2 | cut -d '.' -f1)" < "$(echo {{v}} | cut -d '.' -f1)" ]]; then
+		wget https://github.com/maralla/pack/releases/download/v{{v}}/pack-v{{v}}-{{os}}.tar.gz
+		tar -vxf pack-v{{v}}-{{os}}.tar.gz
+		sudo mv pack /usr/bin/
+		sudo rm -dR contrib
+		rm LICENSE
+		rm pack-v{{v}}-{{os}}.tar.gz
+		rm README.md
+	fi
 
 # Update Super Sayain Vim
 update:
-    @git pull --ff --ff-only;
+	@git pull --ff --ff-only
+	@pack update
 
 # Same as Update
 @upgrade: update
@@ -76,7 +91,7 @@ venv2:
 	fi
 
 # Setup Python3 Virtual Environment
-venv:
+_venv:
 	#!/usr/bin/env bash
 	venv="${XDG_CACHE_HOME:-$HOME/.cache}/vim/venv"
 	if ! hash python3 2>/dev/null; then
@@ -115,10 +130,13 @@ venv:
 			'python-language-server[all]'
 	fi
 
-web:
+# Install Web
+_web:
 	#!/usr/bin/env bash
 	echo -e '\n:: Nodejs'
-	if [ -x "$(command -v npm)" ]; then
+	if [ -x "$(command -v yarn)" ]; then
+		yarn global add neovim
+	elif [ -x "$(command -v npm)" ]; then
 		npm install -g neovim
 	else	
 		echo "Please install yarn or npm"
@@ -146,25 +164,56 @@ web:
 		#eslint-cli
 
 # Install all packages
-pack:
-	pack install sheerun/vim-polyglot
-	pack install liuchengxu/vim-clap
-	pack install SirVer/ultisnips
-	pack install Shougo/echodoc
-	pack install tpope/vim-endwise --for {{vim_endwise}}
-	pack install turbio/bracey.vim --for html,css,javascript
-	pack install euclio/vim-markdown-composer --build 'cargo build --release' --for markdown
-	pack install alvan/vim-closetag --for html,xhtml,xml,phtml,jsx
-	pack install neoclide/coc.nvim --build 'yarn install --frozen-lockfile'
-	pack install lambdalisue/gina.vim
-	pack install ryanoasis/vim-devicons
-	pack install mhinz/vim-signify
-	pack install mhinz/vim-crates -o
-	pack install liuchengxu/vista.vim
-	pack install luochen1990/rainbow
-	pack install Th3Whit3Wolf/vim-shebang
-	pack install ludovicchabant/vim-gutentags --for {{tags}}
-	pack install hardcoreplayers/dashboard-nvim
-	pack install liuchengxu/vim-which-key -o
-	pack install rhysd/git-messenger.vim
-	pack install nathanaelkane/vim-indent-guides
+_pack: _init_pack
+	#!/usr/bin/bash
+	install() {
+		if [ ! -z "$2" ]; then
+			if [ ! -d "$(echo ~/.cache/vim/pack/default/opt/$(echo $1 | cut -d '/' -f2 ))" ]; then
+				pack install $@
+			else
+				echo "$1 is already installed as lazily loaded"
+			fi
+		else
+			if [ ! -d "$(echo ~/.cache/vim/pack/default/start/$(echo $1 | cut -d '/' -f2 ))" ]; then
+				pack install $1
+			else
+				echo "$1 is already installed"
+			fi
+		fi
+	}
+	###########
+	# General #
+	###########
+	install() liuchengxu/vim-clap
+	install() Shougo/echodoc
+	install() ryanoasis/vim-devicons
+	install() mhinz/vim-signify
+	install() Th3Whit3Wolf/vim-shebang
+	install() hardcoreplayers/dashboard-nvim
+	
+	install() skywind3000/asyncrun.vim -o
+	install() honza/vim-snippets -o
+	install() tpope/vim-endwise -o
+	install() tpope/vim-eunuch -o
+	install() alvan/vim-closetag -o
+	install() neoclide/coc.nvim --build 'yarn install --frozen-lockfile' -o
+	install() lambdalisue/gina.vim -o
+	install() liuchengxu/vista.vim -o
+	install() alok/rainbow_parentheses.vim --build 'git checkout fix-spell' -o
+	install() ludovicchabant/vim-gutentags -o
+	install() liuchengxu/vim-which-key -o
+	install() rhysd/git-messenger.vim -o
+	install() tpope/vim-eunuch -o
+
+	############
+	# Language #
+	############
+	install() sheerun/vim-polyglot
+	
+	install() euclio/vim-markdown-composer --build 'cargo build --release' -o
+	install() mhinz/vim-crates -o
+	install() turbio/bracey.vim -o
+	install() arzg/vim-rust-syntax-ext -o
+
+	#install() cespare/vim-toml --for toml
+	#install() numirias/semshi --for python

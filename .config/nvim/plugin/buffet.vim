@@ -4,29 +4,30 @@ endif
 
 let g:buffet_loaded = 1
 
-let g:buffet_always_show_tabline = 0
-let g:buffet_use_devicons = 1
-let g:buffet_powerline_separators = 1
-let g:buffet_noseparator = "\ue0b0"
-let g:buffet_separator = "\ue0b1"
-let g:buffet_show_index = 1
-let g:buffet_modified_icon = "+"
-let g:buffet_left_trunc_icon = "\uf0a8"
-let g:buffet_right_trunc_icon = "\uf0a9"
-let g:buffet_max_plug = get(g:, "buffet_max_plug", 10)
-let g:buffet_new_buffer_name = "*"
-let g:buffet_tab_icon = "\uf00a"
-
 augroup buffet_show_tabline
     autocmd!
     autocmd VimEnter,BufAdd,TabEnter * set showtabline=2
 augroup END
 
-if has("gui")
-    if !get(g:, "buffet_use_gui_tablne", 0)
-        set guioptions-=e
-    endif
-endif
+set guioptions-=e
+
+let g:buffet_powerline_separators = 1
+let g:buffet_noseparator = "\ue0b0"
+let g:buffet_separator = "\ue0b1"
+
+let g:buffet_show_index = get(g:, "buffet_show_index", 1)
+
+let g:buffet_bubble_index = get(g:, "buffet_bubble_index", 1)
+
+let g:buffet_max_plug = get(g:, "buffet_max_plug", 10)
+
+let g:buffet_use_devicons = 1
+let g:buffet_modified_icon = "\uf459"
+let g:buffet_left_trunc_icon = "\uf0a8"
+let g:buffet_right_trunc_icon = "\uf0a9"
+let g:buffet_new_buffer_name = "*"
+let g:buffet_tab_icon = "\uf00a"
+let g:buffet_hidden_buffers = ["terminal", "quickfix"]
 
 let g:buffet_prefix = "Buffet"
 let g:buffet_has_separator = {
@@ -70,10 +71,8 @@ for s:type in g:buffet_buffer_types
 endfor
 
 function! s:GetHiAttr(name, attr)
-
     let vim_mode = "gui"
     let attr_suffix = "#"
-    
 
     let value = synIDattr(synIDtrans(hlID(a:name)), a:attr . attr_suffix, vim_mode)
 
@@ -81,7 +80,6 @@ function! s:GetHiAttr(name, attr)
 endfunction
 
 function! s:SetHi(name, fg, bg)
-    
     let vim_mode = "gui"
 
     let spec = ""
@@ -109,17 +107,7 @@ function! s:LinkHi(name, target)
     exec "silent hi! link " . a:name . " " . a:target
 endfunction
 
-function! s:GetBackGroundColor()
-    let bgcolor = synIDattr(hlID("Normal"), "bg")
-    if bgcolor ==''
-        return 'NONE'
-    else
-        return bgcolor
-    endif
-endfunction
-
 function! s:SetColors()
-    let buffermidcolor = s:GetBackGroundColor()
     " TODO: try to match user's colorscheme
     " Issue: https://github.com/bagrat/vim-buffet/issues/5
     " if get(g:, "buffet_match_color_scheme", 1)
@@ -146,10 +134,8 @@ function! s:SetColors()
     hi! link BuffetRightTrunc BuffetTrunc
     hi! link BuffetEnd BuffetBuffer
 
-
     for left in keys(g:buffet_has_separator)
         for right in keys(g:buffet_has_separator[left])
-
             let vim_mode = "gui"
 
             let left_hi = g:buffet_prefix . left
@@ -186,6 +172,7 @@ augroup end
 
 " Set solors also at the startup
 call s:SetColors()
+
 
 function! SwitchToBuffer(buffer_id, clicks, btn, flags)
     exec "silent buffer " . a:buffer_id

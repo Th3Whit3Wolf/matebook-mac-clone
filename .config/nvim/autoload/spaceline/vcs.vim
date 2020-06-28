@@ -4,13 +4,26 @@
 " URL: https://github.com/taigacute/spaceline.vim
 " License: MIT License
 " =============================================================================
-
+"
 function! spaceline#vcs#git_branch()
-  if exists('g:coc_git_status')
+  if g:spaceline_git == 'coc'
     let l:gitbranch = get(g:, 'coc_git_status', '')
+  elseif g:spaceline_git == 'gina'
+    let l:git_branch_icon = exists('g:spaceline_git_branch_icon') ? g:spaceline_git_branch_icon : ''
+    let l:gitbranch = gina#component#repo#branch()
+    if exists('l:git_branch_icon')
+      return l:git_branch_icon . " " . l:gitbranch
+    endif
+    return l:gitbranch
   else
     let l:git_branch_icon = exists('g:spaceline_git_branch_icon') ? g:spaceline_git_branch_icon : ''
-    let l:gitbranch = system("git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d '\n'")
+    if &modifiable
+      let l:dir=expand('%:p:h')
+      let l:gitrevparse = system("git -C ".l:dir." rev-parse --abbrev-ref HEAD")
+      if !v:shell_error
+        let l:gitbranch="(".substitute(l:gitrevparse, '', '', 'g').") "
+      endif
+    endif
   endif
   if empty(l:gitbranch)
     return ""
@@ -23,7 +36,14 @@ endfunction
 
 function! s:add_diff_icon(type) abort
   let difficon = get(['','',''],a:type,'')
-  let diffdata = split(get(b:, 'coc_git_status', ''),' ')
+  if g:spaceline_git == 'coc'
+    let diffdata = split(get(b:, 'coc_git_status', ''),' ')
+  else
+    let added    = len(systemlist('git diff -U0 | grep + | grep -v +++ | grep -v @@'))
+    let removed  = len(systemlist('git diff -U0 | grep - | grep -v --- | grep -v @@'))
+    let changed  = added > removed ? removed : added
+    let diffdata = [added, removed, changed]
+  endif
   let diff_flags = ''
   if a:type == 0
     let diff_flags = '+'

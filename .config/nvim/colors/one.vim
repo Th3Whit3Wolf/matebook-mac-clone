@@ -25,19 +25,8 @@ if exists('g:colors_name')
   unlet g:colors_name
 endif
 let g:colors_name = 'one'
+let s:italic = 'italic'
 
-if !exists('g:one_allow_italics')
-  let g:one_allow_italics = 0
-endif
-
-let s:italic = ''
-if g:one_allow_italics == 1
-  let s:italic = 'italic'
-endif
-
-if !exists('g:one_termcolors')
-  let g:one_termcolors = 1
-endif
 
 if has('gui_running') || has('termguicolors') || &t_Co == 88 || &t_Co == 256
   " functions
@@ -240,7 +229,7 @@ if has('gui_running') || has('termguicolors') || &t_Co == 88 || &t_Co == 256
   " sets the highlighting for the given group
   fun <SID>XAPI(group, fg, bg, attr)
     let l:attr = a:attr
-    if g:one_allow_italics == 0 && l:attr ==? 'italic'
+    if l:attr ==? 'italic'
       let l:attr= 'none'
     endif
 
@@ -385,19 +374,19 @@ if has('gui_running') || has('termguicolors') || &t_Co == 88 || &t_Co == 256
   " }}}
 
   " Pre-define some hi groups -----------------------------------------------{{{
-  call <sid>X('OneMono1', s:mono_1, '', '')
+  call <sid>X('OneMono1', s:mono_1, '', '')  " WHITE
   call <sid>X('OneMono2', s:mono_2, '', '')
-  call <sid>X('OneMono3', s:mono_3, '', '')
-  call <sid>X('OneMono4', s:mono_4, '', '')
+  call <sid>X('OneMono3', s:mono_3, '', '')  " COMMENT Grey
+  call <sid>X('OneMono4', s:mono_4, '', '') " gutter_fg_grey
 
-  call <sid>X('OneHue1', s:hue_1, '', '')
-  call <sid>X('OneHue2', s:hue_2, '', '')
-  call <sid>X('OneHue3', s:hue_3, '', '')
-  call <sid>X('OneHue4', s:hue_4, '', '')
-  call <sid>X('OneHue5', s:hue_5, '', '')
-  call <sid>X('OneHue52', s:hue_5_2, '', '')
-  call <sid>X('OneHue6', s:hue_6, '', '')
-  call <sid>X('OneHue62', s:hue_6_2, '', '')
+  call <sid>X('OneHue1', s:hue_1, '', '')    " CYAN
+  call <sid>X('OneHue2', s:hue_2, '', '')    " BLUE
+  call <sid>X('OneHue3', s:hue_3, '', '')    " PURPLE
+  call <sid>X('OneHue4', s:hue_4, '', '')    " GREEN
+  call <sid>X('OneHue5', s:hue_5, '', '')    " RED
+  call <sid>X('OneHue52', s:hue_5_2, '', '') " DARK RED
+  call <sid>X('OneHue6', s:hue_6, '', '')    " DARK YELLOW
+  call <sid>X('OneHue62', s:hue_6_2, '', '') " YELLOW
 
   hi! link OneSyntaxFg OneMono1
   " }}}
@@ -410,7 +399,11 @@ if has('gui_running') || has('termguicolors') || &t_Co == 88 || &t_Co == 256
   call <sid>X('Cursor',       '',              s:syntax_accent,  '')
   call <sid>X('CursorIM',     '',              '',               '')
   call <sid>X('CursorColumn', '',              s:syntax_cursor,  '')
-  call <sid>X('CursorLine',   '',              s:syntax_cursor,  'none')
+  if &diff
+    call <sid>X('CursorLine',   '',              '',  'underline')
+  else
+    call <sid>X('CursorLine',   '',              s:syntax_cursor,  'none')
+  endif
   hi! link Directory OneHue2
   call <sid>X('ErrorMsg',     s:hue_5,         s:syntax_bg,      'none')
   call <sid>X('VertSplit',    s:vertsplit,     '',               'none')
@@ -579,17 +572,23 @@ if has('gui_running') || has('termguicolors') || &t_Co == 88 || &t_Co == 256
   hi! link sassControl OneHue3
   hi! link sassExtend OneHue3
   hi! link sassFor OneMono1
-  hi! link sassProperty OneHue1
   hi! link sassFunction OneHue1
   hi! link sassId OneHue2
   hi! link sassInclude OneHue3
+  hi! link sassProperty OneHue1
   hi! link sassMedia OneHue3
   hi! link sassMediaOperators OneMono1
   hi! link sassMixin OneHue3
   hi! link sassMixinName OneHue2
   hi! link sassMixing OneHue3
+  hi! link sassVariable OneHue3
 
+  hi! link scssExtend OneHue3
+  hi! link scssImport OneHue3
+  hi! link scssInclude OneHue3
+  hi! link scssMixin OneHue3
   hi! link scssSelectorName OneHue62
+  hi! link scssVariable OneHue3
   " }}}
 
   " Elixir highlighting------------------------------------------------------{{{
@@ -600,6 +599,11 @@ if has('gui_running') || has('termguicolors') || &t_Co == 88 || &t_Co == 256
   hi! link elixirModuleDeclaration OneHue6
   hi! link elixirInclude OneHue5
   hi! link elixirOperator OneHue6
+  " }}}
+
+  " Fish shell highlighting--------------------------------------------------{{{
+  hi! link fishKeyword OneHue3
+  hi! link fishConditional OneHue3
   " }}}
 
   " Git and git related plugins highlighting --------------------------------{{{
@@ -634,11 +638,20 @@ if has('gui_running') || has('termguicolors') || &t_Co == 88 || &t_Co == 256
   " }}}
 
   " Go highlighting ---------------------------------------------------------{{{
+  hi! link goBuiltins OneHue1
+  hi! link goConst OneHue3
+  hi! link goDeclType OneHue1
   hi! link goDeclaration OneHue3
   hi! link goField OneHue5
+  hi! link goFunctionCall OneHue2
   hi! link goMethod OneHue1
-  hi! link goType OneHue3
+  hi! link goType OneHue62
+  hi! link goTypeName OneHue62
+  hi! link goTypeDecl OneHue3
   hi! link goUnsignedInts OneHue1
+  hi! link goVar OneHue3
+  hi! link goVarDefs OneHue5
+  hi! link goVarAssign OneHue5
   " }}}
 
   " Haskell highlighting ----------------------------------------------------{{{
@@ -656,11 +669,23 @@ if has('gui_running') || has('termguicolors') || &t_Co == 88 || &t_Co == 256
 
   " HTML highlighting -------------------------------------------------------{{{
   hi! link htmlArg OneHue6
-  hi! link htmlTagName OneHue5
-  hi! link htmlTagN OneHue5
+  call <sid>X('htmlBold', s:hue_6, '', 'bold')
+  hi! link htmlH1 OneHue5
+  hi! link htmlH2 OneHue5
+  hi! link htmlH3 OneHue5
+  hi! link htmlH4 OneHue5
+  hi! link htmlH5 OneHue5
+  hi! link htmlH6 OneHue5
+  call <sid>X('htmlItalic', s:hue_3, '', 'italic')
+  call <sid>X('htmlLink', s:hue_1, '', 'underline')
+  hi! link htmlSpecialChar OneHue6
   hi! link htmlSpecialTagName OneHue5
   hi! link htmlTag OneMono2
+  hi! link htmlTagN OneHue5
   hi! link htmlEndTag OneMono2
+  hi! link htmlTagName OneHue5
+  hi! link htmlTagN OneHue5
+  hi! link htmlTitle OneMono1
 
   call <sid>X('MatchTag', s:hue_5, s:syntax_cursor, 'underline,bold')
   " }}}
@@ -668,7 +693,7 @@ if has('gui_running') || has('termguicolors') || &t_Co == 88 || &t_Co == 256
   " JavaScript highlighting -------------------------------------------------{{{
   hi! link coffeeString OneHue4
 
-  hi! link javaScriptBraces OneMono2
+  hi! link javaScriptBraces OneMono1
   hi! link javaScriptFunction OneHue3
   hi! link javaScriptIdentifier OneHue3
   hi! link javaScriptNull OneHue6
@@ -680,18 +705,28 @@ if has('gui_running') || has('termguicolors') || &t_Co == 88 || &t_Co == 256
   hi! link jsBraces OneMono2
   hi! link jsClassBraces OneMono2
   hi! link jsClassKeywords OneHue3
+  hi! link jsClassMethodType OneHue3
   hi! link jsDocParam OneHue2
   hi! link jsDocTags OneHue3
+  hi! link jsExport OneHue3
+  hi! link jsExportDefault OneHue3
+  hi! link jsExtendsKeyword OneHue3
+  hi! link jsFrom OneHue3
   hi! link jsFuncBraces OneMono2
   hi! link jsFuncCall OneHue2
   hi! link jsFuncParens OneMono2
   hi! link jsFunction OneHue3
+  hi! link jsGenerator OneHue62
   hi! link jsGlobalObjects OneHue62
+  hi! link jsImport OneHue3
   hi! link jsModuleWords OneHue3
   hi! link jsModules OneHue3
+  hi! link jsModulesAs OneHue3
   hi! link jsNoise OneMono2
   hi! link jsNull OneHue6
   hi! link jsOperator OneHue3
+  hi! link jsStorageClass OneHue3
+  hi! link jsSuper OneHue5
   hi! link jsParens OneMono2
   hi! link jsStorageClass OneHue3
   hi! link jsTemplateBraces OneHue52
@@ -714,6 +749,7 @@ if has('gui_running') || has('termguicolors') || &t_Co == 88 || &t_Co == 256
   hi! link javascriptFuncKeyword OneHue3
   hi! link javascriptIdentifier OneHue5
   hi! link javascriptImport OneHue3
+  hi! link javascriptMethodName OneMono1
   hi! link javascriptObjectLabel OneMono1
   hi! link javascriptOpSymbol OneHue1
   hi! link javascriptOpSymbols OneHue1
@@ -737,14 +773,18 @@ if has('gui_running') || has('termguicolors') || &t_Co == 88 || &t_Co == 256
   call <sid>X('jsonSemicolonError',       s:hue_5,   '', 'reverse' )
   " }}}
 
+  " LESS highlighting -------------------------------------------------------{{{
+  hi! link lessVariable OneHue3
+  hi! link lessAmpersandChar OneMono1
+  hi! link lessClass OneHue6
+  " }}}
+
   " Markdown highlighting ---------------------------------------------------{{{
-  hi! link markdownUrl OneMono3
+  hi! link markdownBlockquote  OneMono3
   call <sid>X('markdownBold',             s:hue_6,   '', 'bold')
-  call <sid>X('markdownItalic',           s:hue_6,   '', 'bold')
   hi! link markdownCode OneHue4
   hi! link markdownCodeBlock OneHue5
   hi! link markdownCodeDelimiter OneHue4
-  hi! link markdownHeadingDelimiter OneHue52
   hi! link markdownH1 OneHue5
   hi! link markdownH2 OneHue5
   hi! link markdownH3 OneHue5
@@ -752,18 +792,56 @@ if has('gui_running') || has('termguicolors') || &t_Co == 88 || &t_Co == 256
   hi! link markdownH4 OneHue5
   hi! link markdownH5 OneHue5
   hi! link markdownH6 OneHue5
+  hi! link markdownHeadingDelimiter OneHue52
+  hi! link markdownHeadingRule OneMono3
+  hi! link markdownId OneHue3
+  hi! link markdownIdDeclaration OneHue2
+  hi! link markdownIdDelimiter OneHue3
+  call <sid>X('markdownItalic',           s:hue_6,   '', 'bold')
+  hi! link markdownLinkDelimiter OneHue3
+  hi! link markdownLinkText OneHue2
   hi! link markdownListMarker OneHue5
+  hi! link markdownOrderedListMarker OneHue5
+  hi! link markdownRule OneMono3
+  call <sid>X('markdownUrl',           s:hue_1,   '', 'underline')
+  " }}}
+
+  " PERL highlighting -------------------------------------------------------{{{
+  hi! link perlFiledescRead OneHue4
+  hi! link perlFunction OneHue3
+  hi! link perlMatchStartEnd OneHue2
+  hi! link perlMethod OneHue3
+  hi! link perlPOD OneMono3
+  hi! link perlSharpBang OneMono3
+  hi! link perlSpecialString OneHue1
+  hi! link perlStatementFiledesc OneHue5
+  hi! link perlStatementFlow OneHue5
+  hi! link perlStatementInclude OneHue3
+  hi! link perlStatementScalar OneHue3
+  hi! link perlStatementStorage OneMono3
+  hi! link perlSubName OneHue62
+  hi! link perlVarPlain OneHue2
   " }}}
 
   " PHP highlighting --------------------------------------------------------{{{
-  hi! link phpClass OneHue62
-  hi! link phpFunction OneHue2
-  hi! link phpFunctions OneHue2
-  hi! link phpInclude OneHue3
-  hi! link phpKeyword OneHue3
-  hi! link phpParent OneMono3
+  hi! link phpVarSelector OneHue52
+  hi! link phpOperator OneMono1
+  hi! link phpParent OneMono1
+  hi! link phpMemberSelector OneMono1
   hi! link phpType OneHue3
-  hi! link phpSuperGlobals OneHue5
+  hi! link phpKeyword OneMono3
+  hi! link phpClass OneHue62
+  hi! link phpUseClass OneMono1
+  hi! link phpUseAlias OneMono1
+  hi! link phpInclude OneHue3
+  hi! link phpClassExtends OneHue4
+  hi! link phpDocTags OneMono1
+  hi! link phpFunction OneHue2
+  hi! link phpFunctions OneHue1
+  hi! link phpMethodsVar OneHue6
+  hi! link phpMagicConstants OneHue6
+  hi! link phpSuperglobals OneHue5
+  hi! link phpConstants OneHue6
   " }}}
 
   " Pug (Formerly Jade) highlighting ----------------------------------------{{{
@@ -826,6 +904,41 @@ if has('gui_running') || has('termguicolors') || &t_Co == 88 || &t_Co == 256
   hi! link rubySymbol OneHue1
   " }}}
 
+  " Rust highlighting -------------------------------------------------------{{{
+  call <sid>X('rustExternCrate',          s:hue_5,    '', 'bold')
+  hi! link rustIdentifier OneHue2
+  hi! link rustDeriveTrait OneHue4
+  hi! link SpecialComment OneMono3
+  hi! link rustCommentLine OneMono3
+  hi! link rustCommentLineDoc OneMono3
+  hi! link rustCommentLineDocError OneMono3
+  hi! link rustCommentBlock OneMono3
+  hi! link rustCommentBlockDoc OneMono3
+  hi! link rustCommentBlockDocError OneMono3
+  " }}}
+
+  " TeX highlighting ------------------------------------------------------{{{
+  hi! link texStatement OneHue3
+  hi! link texSubscripts OneHue6
+  hi! link texSuperscripts OneHue6
+  hi! link texTodo OneHue52
+  hi! link texBeginEnd OneHue3
+  hi! link texBeginEndName OneHue2
+  hi! link texMathMatcher OneHue2
+  hi! link texMathDelim OneHue2
+  hi! link texDelimiter OneHue6
+  hi! link texSpecialChar OneHue6
+  hi! link texCite OneHue2
+  hi! link texRefZone OneHue2
+  " }}}
+
+  " TypeScript highlighting ---------------------------------------------------{{{
+  hi! link typescriptReserved OneHue3
+  hi! link typescriptEndColons OneMono1
+  hi! link typescriptBraces OneMono1
+
+  " }}}
+
   " Spelling highlighting ---------------------------------------------------{{{
   call <sid>X('SpellBad',     '', s:syntax_bg, 'undercurl')
   call <sid>X('SpellLocal',   '', s:syntax_bg, 'undercurl')
@@ -847,7 +960,7 @@ if has('gui_running') || has('termguicolors') || &t_Co == 88 || &t_Co == 256
   " }}}
 
   " XML highlighting --------------------------------------------------------{{{
-  hi! link xmlAttrib OneHue62
+  hi! link xmlAttrib OneHue6
   hi! link xmlEndTag OneHue5
   hi! link xmlTag OneHue5
   hi! link xmlTagName OneHue5
@@ -865,23 +978,12 @@ if has('gui_running') || has('termguicolors') || &t_Co == 88 || &t_Co == 256
   hi! link zshVariableDef OneHue6
   " }}}
 
-  " Rust highlighting -------------------------------------------------------{{{
-  call <sid>X('rustExternCrate',          s:hue_5,    '', 'bold')
-  hi! link rustIdentifier OneHue2
-  hi! link rustDeriveTrait OneHue4
-  hi! link SpecialComment OneMono3
-  hi! link rustCommentLine OneMono3
-  hi! link rustCommentLineDoc OneMono3
-  hi! link rustCommentLineDocError OneMono3
-  hi! link rustCommentBlock OneMono3
-  hi! link rustCommentBlockDoc OneMono3
-  hi! link rustCommentBlockDocError OneMono3
-  " }}}
-
   " man highlighting --------------------------------------------------------{{{
   hi! link manTitle String
   hi! link manFooter OneMono3
   " }}}
+
+  " Plugin Highlighting {{{
 
   " ALE (Asynchronous Lint Engine) highlighting -----------------------------{{{
   hi! link ALEWarningSign OneHue62
@@ -892,25 +994,42 @@ if has('gui_running') || has('termguicolors') || &t_Co == 88 || &t_Co == 256
   hi! link NERDTreeFile OneSyntaxFg
   " }}}
 
+  " easymotion/vim-easymotion -----------------------------------------------{{{
+  call <sid>X('EasyMotionTarget',    '', s:hue_5, 'bold')
+  call <sid>X('EasyMotionTarget2First',    '', s:hue_6_2, 'bold')
+  call <sid>X('EasyMotionTarget2Second',    '', s:hue_6, 'bold')
+  hi! link EasyMotionShade OneMono3
+  " }}}
+
+  " neomake/neomake ---------------------------------------------------------{{{
+  hi! link NeomakeWarningSign OneHue62
+  hi! link NeomakeErrorSign OneHue5
+  hi! link NeomakeInfoSign OneHue2
+
+  " plasticboy/vim-markdown ---------------------------------------------------{{{
+  hi! link mkdDelimiter OneHue3
+  hi! link mkdHeading OneHue5
+  hi! link mkdLink OneHue2
+  call <sid>X('mkdUrl',    '', s:hue_1, 'underline')
+
+  " }}}
   " Neovim Terminal Colors --------------------------------------------------{{{
-  if has('nvim') && g:one_termcolors != 0
-    let g:terminal_color_0  = "#353a44"
-    let g:terminal_color_8  = "#353a44"
-    let g:terminal_color_1  = "#e88388"
-    let g:terminal_color_9  = "#e88388"
-    let g:terminal_color_2  = "#a7cc8c"
-    let g:terminal_color_10 = "#a7cc8c"
-    let g:terminal_color_3  = "#ebca8d"
-    let g:terminal_color_11 = "#ebca8d"
-    let g:terminal_color_4  = "#72bef2"
-    let g:terminal_color_12 = "#72bef2"
-    let g:terminal_color_5  = "#d291e4"
-    let g:terminal_color_13 = "#d291e4"
-    let g:terminal_color_6  = "#65c2cd"
-    let g:terminal_color_14 = "#65c2cd"
-    let g:terminal_color_7  = "#e3e5e9"
-    let g:terminal_color_15 = "#e3e5e9"
-  endif
+  let g:terminal_color_0  = "#353a44"
+  let g:terminal_color_8  = "#353a44"
+  let g:terminal_color_1  = "#e88388"
+  let g:terminal_color_9  = "#e88388"
+  let g:terminal_color_2  = "#a7cc8c"
+  let g:terminal_color_10 = "#a7cc8c"
+  let g:terminal_color_3  = "#ebca8d"
+  let g:terminal_color_11 = "#ebca8d"
+  let g:terminal_color_4  = "#72bef2"
+  let g:terminal_color_12 = "#72bef2"
+  let g:terminal_color_5  = "#d291e4"
+  let g:terminal_color_13 = "#d291e4"
+  let g:terminal_color_6  = "#65c2cd"
+  let g:terminal_color_14 = "#65c2cd"
+  let g:terminal_color_7  = "#e3e5e9"
+  let g:terminal_color_15 = "#e3e5e9"
 
   " Delete functions =========================================================={{{
   " delf <SID>X
@@ -928,6 +1047,11 @@ if has('gui_running') || has('termguicolors') || &t_Co == 88 || &t_Co == 256
 
 endif
 "}}}
+" Termdebug highlighting for Vim 8.1+ --------------------------------------{{{
+" See `:h hl-debugPC` and `:h hl-debugBreakpoint`.
+  call <sid>X('debugPC',          '',    s:special_grey, '') " the current position
+  call <sid>X('VertSplit',    s:vertsplit,     s:hue_5,               '') " a breakpoint
+" }}}
 
 " Public API --------------------------------------------------------------{{{
 function! one#highlight(group, fg, bg, attr)
